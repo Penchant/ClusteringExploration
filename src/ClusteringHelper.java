@@ -1,7 +1,7 @@
 import java.util.List;
 import java.util.stream.IntStream;
 
-public class ClusteringHelper {
+class ClusteringHelper {
 
     /**
      * Returns the Cluster from clusters with the minimum distance to d1
@@ -9,17 +9,15 @@ public class ClusteringHelper {
      * @param clusters The list of clusters
      * @return The cluster with the least distance
      */
-    public static Cluster argMin(List<Double> d1, Cluster[] clusters) {
+    static Cluster argMin(List<Double> d1, Cluster[] clusters) {
         Cluster cluster = null;
         double minDistance = Double.MAX_VALUE;
 
-        for (int j = 0; j < clusters.length; j++) {
-            for (int i = 0; i < d1.size(); i++) {
-                double distance = distance(d1, clusters[j].centroid.values);
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    cluster = clusters[j];
-                }
+        for (Cluster cluster1 : clusters) {
+            double distance = distance(d1, cluster1.centroid.values);
+            if (distance < minDistance) {
+                minDistance = distance;
+                cluster = cluster1;
             }
         }
 
@@ -32,7 +30,7 @@ public class ClusteringHelper {
      * @param d2 The second list of attributes
      * @return The distance
      */
-    public static double distance(List<Double> d1, List<Double> d2) {
+    static double distance(List<Double> d1, List<Double> d2) {
         return Math.sqrt(IntStream.range(0, d1.size()).mapToDouble(i -> Math.pow(d1.get(i) - d2.get(i), 2)).sum());
     }
 
@@ -42,7 +40,7 @@ public class ClusteringHelper {
      * @param newCentroids The list of new centroids
      * @return Boolean of if all centroids are equal or not
      */
-    public static boolean areAllCentroidsEqual(List<Centroid> oldCentroids, List<Centroid> newCentroids) {
+    static boolean areAllCentroidsEqual(List<Centroid> oldCentroids, List<Centroid> newCentroids) {
         if (oldCentroids.size() != newCentroids.size()) return false;
 
         // Check if there are any centroids that are not equal

@@ -6,7 +6,7 @@ class Cluster {
 
     List<List<Double>> members;
 
-    public Cluster(int length) {
+    Cluster(int length) {
         centroid = new Centroid();
         members = new ArrayList<>();
 

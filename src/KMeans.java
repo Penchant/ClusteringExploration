@@ -3,11 +3,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class KMeans {
-    public static Cluster[] clusters;
-    public static int epochs = 0;
+class KMeans {
+    private static Cluster[] clusters;
+    private static int epochs = 0;
 
-    public static List<Centroid> kmeans(List<List<Double>> D, int k) {
+    static List<Centroid> kmeans(List<List<Double>> D, int k) {
         clusters = new Cluster[k];
 
         List<Centroid> lastCentroid = new ArrayList<>();
@@ -28,8 +28,7 @@ public class KMeans {
         while (!ClusteringHelper.areAllCentroidsEqual(lastCentroid, centroids())) {
             Logger.info("At least one centroid has changed - Updating");
             epochs++;
-            lastCentroid = new ArrayList<>();
-            lastCentroid.addAll(centroids());
+            lastCentroid = new ArrayList<>(centroids());
 
             // Clear members
             for (Cluster c : clusters) {
@@ -42,6 +41,7 @@ public class KMeans {
                 // c <- arg_min mu_j d(x_i, mu_j)
                 Logger.info("Applying arg min on the data and each cluster");
                 Cluster c = ClusteringHelper.argMin(x, clusters);
+
                 // assign x_i to the cluster c
                 Logger.info("Assigning to cluster");
                 c.members.add(x);
@@ -57,10 +57,10 @@ public class KMeans {
                 if (c.members.size() == 0) continue;
 
                 for (int m = 0; m < c.members.get(0).size(); m++) {
-                    averages.add(c.members.get(0).get(m));
+                    averages.add(0d);
                 }
 
-                for (int j = 1; j < c.members.size(); j++) {
+                for (int j = 0; j < c.members.size(); j++) {
                     // For the values of the members
                     for (int m = 0; m < c.members.get(j).size(); m++) {
                         averages.set(m, averages.get(m) + c.members.get(j).get(m));
@@ -68,7 +68,7 @@ public class KMeans {
                 }
 
                 for (int i = 0; i < averages.size(); i++) {
-                    averages.set(i, averages.get(i) / c.members.get(0).size());
+                    averages.set(i, averages.get(i) / c.members.size());
                 }
 
                 // For the values of the centroid
@@ -84,7 +84,7 @@ public class KMeans {
      * Calculates and returns a list of all the centroids of the clusters
      * @return A list of all the centroids of the clusters
      */
-    public static List<Centroid> centroids() {
+    static List<Centroid> centroids() {
         return Stream.of(clusters).map(i -> i.centroid.copy()).collect(Collectors.toList());
     }
 
