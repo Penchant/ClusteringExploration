@@ -26,7 +26,7 @@ public class DataLoader {
                 // Get each comma separated value and add to our list
                 List<Double> samples = new ArrayList<>();
                 // Limit to not include the class label
-                Stream.of(values).limit(values.length - 1).forEach(i -> {
+                Stream.of(values).limit(values.length - 2).forEach(i -> {
                     samples.add(Double.parseDouble(i));
                 });
                 out.add(samples);

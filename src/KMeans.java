@@ -1,14 +1,9 @@
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class KMeans {
-
-
     public static Cluster[] clusters;
 
     public static List<Centroid> kmeans(List<List<Double>> D, int k) {
@@ -16,6 +11,7 @@ public class KMeans {
 
         List<Centroid> lastCentroid = new ArrayList<>();
 
+        Logger.info("Randomly initializing centroids");
         // Init mu_i ... mu_k randomly
         for (int i = 0; i < clusters.length; i++) {
             clusters[i] = new Cluster(k);
@@ -30,7 +26,7 @@ public class KMeans {
 
         // Repeat until no change in mu_i ... mu_k
         while (!ClusteringHelper.areAllCentroidsEqual(lastCentroid, centroids())) {
-            System.out.println("Centroids are not equal");
+            Logger.info("At least one centroid has changed - Updating");
             lastCentroid = new ArrayList<>();
             lastCentroid.addAll(centroids());
 
@@ -39,14 +35,18 @@ public class KMeans {
                 c.members.clear();
             }
 
+            Logger.info("Clustering data to centroids");
             // for all x in D do
             for (List x : D) {
                 // c <- arg_min mu_j d(x_i, mu_j)
+                Logger.info("Applying arg min on the data and each cluster");
                 Cluster c = ClusteringHelper.argMin(x, clusters);
                 // assign x_i to the cluster c
+                Logger.info("Assigning to cluster");
                 c.members.add(x);
             }
 
+            Logger.info("Recalculating cluster members");
             // recalculate all mu_j based on new clusters
             // Fop each cluster
             for (Cluster c : clusters) {
