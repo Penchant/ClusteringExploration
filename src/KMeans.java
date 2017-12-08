@@ -22,7 +22,6 @@ public class KMeans {
             }
 
             clusters[i].centroid = new Centroid(vals);
-            clusters[i].members = new ArrayList<>();
         }
 
         // Repeat until no change in mu_i ... mu_k
@@ -81,6 +80,10 @@ public class KMeans {
         return centroids();
     }
 
+    /**
+     * Calculates and returns a list of all the centroids of the clusters
+     * @return A list of all the centroids of the clusters
+     */
     public static List<Centroid> centroids() {
         return Stream.of(clusters).map(i -> i.centroid.copy()).collect(Collectors.toList());
     }

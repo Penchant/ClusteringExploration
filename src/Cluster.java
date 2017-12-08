@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 class Cluster {
@@ -5,12 +6,18 @@ class Cluster {
 
     List<List<Double>> members;
 
-    Cluster(int length) {
+    public Cluster(int length) {
         centroid = new Centroid();
+        members = new ArrayList<>();
 
         // Randomly init centroids
         for (int i = 0; i < length; i++) {
             centroid.add(Math.random());
         }
+    }
+
+    public Cluster() {
+        centroid = new Centroid();
+        members = new ArrayList<>();
     }
 }

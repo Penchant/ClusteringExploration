@@ -1,6 +1,11 @@
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class that represents a Centroid
+ * Used for more clarity and a few additional functions over just
+ * using a List<Double>
+ */
 class Centroid {
     List<Double> values;
 
@@ -18,14 +23,27 @@ class Centroid {
         }
     }
 
+    /**
+     * Returns the size of the centroid
+     * @return The size of the centroid
+     */
     public int size() {
         return values.size();
     }
 
+    /**
+     * Adds an element to the centroid
+     * @param value The element to be added
+     */
     public void add(double value) {
         values.add(value);
     }
 
+    /**
+     * Returns the value in the given index
+     * @param index the index of the wanted value
+     * @return The value in the given index
+     */
     public double get(int index) {
         return values.get(index);
     }
@@ -45,6 +63,10 @@ class Centroid {
         }
     }
 
+    /**
+     * Makes and returns a copy of this centroid
+     * @return The copy of the centroid
+     */
     public Centroid copy() {
         Centroid out = new Centroid();
         out.values = values;
