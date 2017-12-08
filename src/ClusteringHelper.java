@@ -21,7 +21,7 @@ public class ClusteringHelper {
     }
 
     public static double distance(List<Double> d1, List<Double> d2) {
-        return IntStream.range(0, d1.size()).mapToDouble(i -> Math.abs(d1.get(i) - d2.get(i))).sum() / d1.size();
+        return Math.sqrt(IntStream.range(0, d1.size()).mapToDouble(i -> Math.pow(d1.get(i) - d2.get(i), 2)).sum());
     }
 
     public static boolean areAllCentroidsEqual(List<Centroid> oldCentroids, List<Centroid> newCentroids) {

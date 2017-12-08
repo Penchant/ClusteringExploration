@@ -5,6 +5,7 @@ import java.util.stream.Stream;
 
 public class KMeans {
     public static Cluster[] clusters;
+    public static int epochs = 0;
 
     public static List<Centroid> kmeans(List<List<Double>> D, int k) {
         clusters = new Cluster[k];
@@ -27,6 +28,7 @@ public class KMeans {
         // Repeat until no change in mu_i ... mu_k
         while (!ClusteringHelper.areAllCentroidsEqual(lastCentroid, centroids())) {
             Logger.info("At least one centroid has changed - Updating");
+            epochs++;
             lastCentroid = new ArrayList<>();
             lastCentroid.addAll(centroids());
 
@@ -75,6 +77,7 @@ public class KMeans {
             }
         }
 
+        Logger.important("K Means successfully finished in " + epochs + " epochs");
         return centroids();
     }
 
