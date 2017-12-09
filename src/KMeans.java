@@ -7,7 +7,7 @@ class KMeans {
     private static Cluster[] clusters;
     private static int epochs = 0;
 
-    static List<Centroid> kmeans(List<List<Double>> D, int k) {
+    static List<Centroid> kmeans(List<AttributeSet> D, int k) {
         clusters = new Cluster[k];
 
         List<Centroid> lastCentroid = new ArrayList<>();
@@ -37,7 +37,7 @@ class KMeans {
 
             Logger.info("Clustering data to centroids");
             // for all x in D do
-            for (List x : D) {
+            for (AttributeSet x : D) {
                 // c <- arg_min mu_j d(x_i, mu_j)
                 Logger.info("Applying arg min on the data and each cluster");
                 Cluster c = ClusteringHelper.argMin(x, clusters);
@@ -63,7 +63,7 @@ class KMeans {
                 for (int j = 0; j < c.members.size(); j++) {
                     // For the values of the members
                     for (int m = 0; m < c.members.get(j).size(); m++) {
-                        averages.set(m, averages.get(m) + c.members.get(j).get(m));
+                        averages.set(m, averages.get(m) + c.members.get(j).attributes.get(m));
                     }
                 }
 
@@ -72,7 +72,7 @@ class KMeans {
                 }
 
                 // For the values of the centroid
-                c.centroid.values = averages;
+                c.centroid.values = new AttributeSet(averages);
             }
         }
 

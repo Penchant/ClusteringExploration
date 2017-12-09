@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 import java.util.ArrayList;
+=======
+import org.w3c.dom.Attr;
+
+>>>>>>> c981f107ea304c32457c1d01e6c505182b465718
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -12,7 +17,7 @@ class ClusteringHelper {
      * @param clusters The list of clusters
      * @return The cluster with the least distance
      */
-    static Cluster argMin(List<Double> d1, Cluster[] clusters) {
+    static Cluster argMin(AttributeSet d1, Cluster[] clusters) {
         Cluster cluster = null;
         double minDistance = Double.MAX_VALUE;
 
@@ -33,8 +38,8 @@ class ClusteringHelper {
      * @param d2 The second list of attributes
      * @return The distance
      */
-    static double distance(List<Double> d1, List<Double> d2) {
-        return Math.sqrt(IntStream.range(0, d1.size()).mapToDouble(i -> Math.pow(d1.get(i) - d2.get(i), 2)).sum());
+    static double distance(AttributeSet d1, AttributeSet d2) {
+        return Math.sqrt(IntStream.range(0, d1.size()).mapToDouble(i -> Math.pow(d1.attributes.get(i) - d2.attributes.get(i), 2)).sum());
     }
 
     /**
