@@ -7,8 +7,8 @@ import java.util.stream.Stream;
 public class DataLoader {
 
     // Loads the data from a csv or .data file and returns it as a List<List<Double>>
-    public static List<List<Double>> loadData(String path) {
-        List<List<Double>> out = new ArrayList<>();
+    public static List<AttributeSet> loadData(String path) {
+        List<AttributeSet> out = new ArrayList<>();
 
         try {
             File file = new File(path);
@@ -24,10 +24,10 @@ public class DataLoader {
                 String[] values = line.split(",");
 
                 // Get each comma separated value and add to our list
-                List<Double> samples = new ArrayList<>();
+                AttributeSet samples = new AttributeSet();
                 // Limit to not include the class label
                 Stream.of(values).limit(values.length - 2).forEach(i -> {
-                    samples.add(Double.parseDouble(i));
+                    samples.attributes.add(Double.parseDouble(i));
                 });
                 out.add(samples);
             }

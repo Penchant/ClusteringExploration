@@ -12,16 +12,14 @@ public class PSO implements PSOTunableParameters {
     private static Cluster[] clusters;
     private static int epochs = 0;
 
-
-
-    List<List<Double>> data = DataLoader.loadData("C:\\Users\\gross\\Documents\\GitHub\\ClusteringExploration\\a1_raw.csv");
+    List<AttributeSet> data = DataLoader.loadData("C:\\Users\\gross\\Documents\\GitHub\\ClusteringExploration\\a1_raw.csv");
 
     Random numGenerator = new Random();
 
     public void updateClusters() {
         Logger.info("Clustering data to centroids");
         // for all x in D do
-        for (List x : data) {
+        for (AttributeSet x : data) {
             // c <- arg_min mu_j d(x_i, mu_j)
             Logger.info("Applying arg min on the data and each cluster");
             Cluster c = ClusteringHelper.argMin(x, clusters);
@@ -35,7 +33,7 @@ public class PSO implements PSOTunableParameters {
 
     public void updateFitness(){
         for (int i = 0; i < DIMENSION; i++) {
-            for (List<Double> d: data){
+            for (AttributeSet d: data){
 
             }
 

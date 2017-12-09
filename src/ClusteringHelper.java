@@ -1,9 +1,4 @@
-<<<<<<< HEAD
 import java.util.ArrayList;
-=======
-import org.w3c.dom.Attr;
-
->>>>>>> c981f107ea304c32457c1d01e6c505182b465718
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -73,7 +68,7 @@ class ClusteringHelper {
         return Stream.of(clusters).map(i -> i.centroid.copy()).collect(Collectors.toList());
     }
 
-    static List<Centroid> randomCentroids(List<List<Double>> D, Cluster[] clusters, int k) {
+    static List<Centroid> randomCentroids(List<AttributeSet> D, Cluster[] clusters, int k) {
         clusters = new Cluster[k];
 
         List<Centroid> lastCentroid = new ArrayList<>();
@@ -89,6 +84,7 @@ class ClusteringHelper {
 
             clusters[i].centroid = new Centroid(vals);
         }
+
         return ClusteringHelper.centroids(clusters);
     }
 }
