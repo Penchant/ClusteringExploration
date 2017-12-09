@@ -25,10 +25,10 @@ class KMeans {
         }
 
         // Repeat until no change in mu_i ... mu_k
-        while (!ClusteringHelper.areAllCentroidsEqual(lastCentroid, centroids())) {
+        while (!ClusteringHelper.areAllCentroidsEqual(lastCentroid, ClusteringHelper.centroids(clusters))) {
             Logger.info("At least one centroid has changed - Updating");
             epochs++;
-            lastCentroid = new ArrayList<>(centroids());
+            lastCentroid = new ArrayList<>(ClusteringHelper.centroids(clusters));
 
             // Clear members
             for (Cluster c : clusters) {
@@ -77,15 +77,7 @@ class KMeans {
         }
 
         Logger.important("K Means successfully finished in " + epochs + " epochs");
-        return centroids();
-    }
-
-    /**
-     * Calculates and returns a list of all the centroids of the clusters
-     * @return A list of all the centroids of the clusters
-     */
-    static List<Centroid> centroids() {
-        return Stream.of(clusters).map(i -> i.centroid.copy()).collect(Collectors.toList());
+        return ClusteringHelper.centroids(clusters);
     }
 
 }

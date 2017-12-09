@@ -1,5 +1,8 @@
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 class ClusteringHelper {
 
@@ -54,5 +57,33 @@ class ClusteringHelper {
 
         // All centroids must match, return true
         return true;
+    }
+
+
+    /**
+     * Calculates and returns a list of all the centroids of the clusters
+     * @return A list of all the centroids of the clusters
+     */
+    static List<Centroid> centroids(Cluster[] clusters) {
+        return Stream.of(clusters).map(i -> i.centroid.copy()).collect(Collectors.toList());
+    }
+
+    static List<Centroid> randomCentroids(List<List<Double>> D, Cluster[] clusters, int k) {
+        clusters = new Cluster[k];
+
+        List<Centroid> lastCentroid = new ArrayList<>();
+
+        Logger.info("Randomly initializing centroids");
+        // Init mu_i ... mu_k randomly
+        for (int i = 0; i < clusters.length; i++) {
+            clusters[i] = new Cluster(k);
+            List<Double> vals = new ArrayList<>();
+            for (int j = 0; j < D.get(0).size(); j++) {
+                vals.add(Math.random());
+            }
+
+            clusters[i].centroid = new Centroid(vals);
+        }
+        return ClusteringHelper.centroids(clusters);
     }
 }
