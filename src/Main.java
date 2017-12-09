@@ -4,15 +4,15 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
         Logger.level = Logger.LoggingLevel.IMPORTANT;
-        List<Centroid> centroids = KMeans.kmeans(genSamples(), 2);
+        List<Centroid> centroids = KMeans.kmeans(genSamples(), 4);
         // List<Centroid> centroids = KMeans.kmeans(DataLoader.loadData("a1_raw.csv"), 8);
         centroids.stream().forEach(i -> {
             System.out.println(i);
         });
     }
 
-    static List<List<Double>>  genSamples() {
-        List<List<Double>> values = new ArrayList<>();
+    static List<AttributeSet>  genSamples() {
+        List<AttributeSet> values = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
                 List n = new ArrayList<>();
@@ -21,8 +21,8 @@ public class Main {
                 n.add(j + 0.5);
                 n2.add(i + 50.5);
                 n2.add(j + 50.5);
-                values.add(n);
-                values.add(n2);
+                values.add(new AttributeSet(n));
+                values.add(new AttributeSet(n2));
             }
         }
 

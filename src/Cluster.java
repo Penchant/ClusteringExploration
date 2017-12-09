@@ -2,11 +2,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 class Cluster {
+    int id;
+
     Centroid centroid;
 
-    List<List<Double>> members;
+    List<AttributeSet> members;
 
     Cluster(int length) {
+        this.id = id;
         centroid = new Centroid();
         members = new ArrayList<>();
 
@@ -17,6 +20,12 @@ class Cluster {
     }
 
     public Cluster() {
+        centroid = new Centroid();
+        members = new ArrayList<>();
+    }
+
+    public Cluster(int length, int id) {
+        this.id = id;
         centroid = new Centroid();
         members = new ArrayList<>();
     }

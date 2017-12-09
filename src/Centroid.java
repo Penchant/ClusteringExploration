@@ -1,5 +1,6 @@
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Class that represents a Centroid
@@ -7,20 +8,17 @@ import java.util.List;
  * using a List<Double>
  */
 class Centroid {
-    List<Double> values;
+    AttributeSet values;
 
     Centroid(List<Double> values) {
-        this.values = new ArrayList<>();
-        for (double d : values) {
-            this.values.add(d);
-        }
+        this.values = new AttributeSet();
+        this.values.attributes.addAll(values);
     }
 
     Centroid(double ... values) {
-        this.values = new ArrayList<>();
-        for (double d : values) {
-            this.values.add(d);
-        }
+        this.values = new AttributeSet();
+        // Effectively `this.values.addAll(values)`
+        this.values.attributes.addAll(Arrays.stream(values).boxed().collect(Collectors.toList()));
     }
 
     /**
@@ -36,7 +34,7 @@ class Centroid {
      * @param value The element to be added
      */
     void add(double value) {
-        values.add(value);
+        values.attributes.add(value);
     }
 
     /**
@@ -45,7 +43,7 @@ class Centroid {
      * @return The value in the given index
      */
     double get(int index) {
-        return values.get(index);
+        return values.attributes.get(index);
     }
 
     @Override
@@ -76,7 +74,7 @@ class Centroid {
     @Override
     public String toString() {
         String out = "";
-        for (Double d : values) {
+        for (Double d : values.attributes) {
             out += d + ", ";
         }
         return out;
