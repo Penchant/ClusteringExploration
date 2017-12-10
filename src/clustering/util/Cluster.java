@@ -1,12 +1,17 @@
+package clustering.util;
+
 import java.util.ArrayList;
 import java.util.List;
 
-class Cluster {
-    Centroid centroid;
+public class Cluster {
 
-    List<AttributeSet> members;
+    public int id;
 
-    Cluster(int length) {
+    public Centroid centroid;
+
+    public List<AttributeSet> members;
+
+    public Cluster(int length) {
         centroid = new Centroid();
         members = new ArrayList<>();
 

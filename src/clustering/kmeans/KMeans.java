@@ -1,13 +1,21 @@
+package clustering.kmeans;
+
+import clustering.util.*;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-class KMeans {
+public class KMeans {
     private static Cluster[] clusters;
     private static int epochs = 0;
 
-    static List<Centroid> kmeans(List<AttributeSet> D, int k) {
+    /**
+     * Runs the K Means algorithm
+     * @param D The data to run it on
+     * @param k The number of clusters desired
+     * @return A list of the centroids of each cluster calculated
+     */
+    public static List<Centroid> run(List<AttributeSet> D, int k) {
         clusters = new Cluster[k];
 
         List<Centroid> lastCentroid = new ArrayList<>();
@@ -25,10 +33,10 @@ class KMeans {
         }
 
         // Repeat until no change in mu_i ... mu_k
-        while (!ClusteringHelper.areAllCentroidsEqual(lastCentroid, centroids())) {
+        while (!ClusteringHelper.areAllCentroidsEqual(lastCentroid, ClusteringHelper.centroids(clusters))) {
             Logger.info("At least one centroid has changed - Updating");
             epochs++;
-            lastCentroid = new ArrayList<>(centroids());
+            lastCentroid = new ArrayList<>(ClusteringHelper.centroids(clusters));
 
             // Clear members
             for (Cluster c : clusters) {
@@ -77,15 +85,7 @@ class KMeans {
         }
 
         Logger.important("K Means successfully finished in " + epochs + " epochs");
-        return centroids();
-    }
-
-    /**
-     * Calculates and returns a list of all the centroids of the clusters
-     * @return A list of all the centroids of the clusters
-     */
-    static List<Centroid> centroids() {
-        return Stream.of(clusters).map(i -> i.centroid.copy()).collect(Collectors.toList());
+        return ClusteringHelper.centroids(clusters);
     }
 
 }

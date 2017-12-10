@@ -1,9 +1,15 @@
+package clustering.dbscan;
+
+import clustering.util.Logger;
+import clustering.util.AttributeSet;
+import clustering.util.ClusteringHelper;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-class DBScan {
+public class DBScan {
 
     /**
      * DB Scan clustering algorithm
@@ -12,7 +18,7 @@ class DBScan {
      * @param minPts The min number of points per cluster operation
      * @return A Map of each cluster id and all values that belong
      */
-    static Map<Integer, List<AttributeSet>> dbScan(List<AttributeSet> D, double epsilon, int minPts) {
+    public static Map<Integer, List<AttributeSet>> run(List<AttributeSet> D, double epsilon, int minPts) {
         // currClustLbl <- 1
         int currClustLabel = 1;
 

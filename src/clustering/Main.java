@@ -1,3 +1,14 @@
+package clustering;
+
+import clustering.aco.ACO;
+import clustering.dbscan.DBScan;
+import clustering.kmeans.KMeans;
+import clustering.pso.PSO;
+import clustering.util.AttributeSet;
+import clustering.util.Centroid;
+import clustering.util.DataLoader;
+import clustering.util.Logger;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -82,7 +93,7 @@ public class Main {
                 System.out.print("Enter k (How many clusters, integer): ");
 
                 int k = Integer.parseInt(scanner.nextLine());
-                List<Centroid> centroids = KMeans.kmeans(data, k);
+                List<Centroid> centroids = KMeans.run(data, k);
 
                 centroids.stream().forEach(System.out::println);
                 break;
@@ -93,34 +104,49 @@ public class Main {
                 System.out.print("Enter minPts (Min amount of points required, integer): ");
                 int minPts = Integer.parseInt(scanner.nextLine());
 
-                Map<Integer, List<AttributeSet>> clusters = DBScan.dbScan(data, epsilon, minPts);
+                Map<Integer, List<AttributeSet>> clusters = DBScan.run(data, epsilon, minPts);
                 clusters.keySet().forEach(s -> Logger.info(clusters.get(s)));
                 break;
             case cl: break;
-            case pso: break;
+            case pso:
+                System.out.print("Enter number of iterations (Integer): ");
+                int iteration = Integer.parseInt(scanner.nextLine());
+
+                System.out.print("Enter number of particles (Integer): ");
+                int particles = Integer.parseInt(scanner.nextLine());
+
+                System.out.print("Enter number of clusters per particle (Integer): ");
+                k = Integer.parseInt(scanner.nextLine());
+
+                System.out.print("Enter tunable constant one (double [0,4]): ");
+                int c1 = Integer.parseInt(scanner.nextLine());
+
+                System.out.print("Enter tunable constant two (double [0,4]): ");
+                int c2 = Integer.parseInt(scanner.nextLine());
+
+                new PSO(data, iteration, particles, k, c1, c2);
+                break;
             case aco: 
                 System.out.print("Enter number of ants: ");
                 int ants = Integer.parseInt(scanner.nextLine());
 
                 System.out.print("Enter number of iterations: ");
-                int iterations = Integer.parseInt (scanner.nextLine ());
+                int iterations = Integer.parseInt (scanner.nextLine());
 
                 System.out.print("Enter the size of the local neighbor search (double): ");
-                double size = Double.parseDouble(scanner.nextLine ());
+                double size = Double.parseDouble(scanner.nextLine());
 
                 System.out.print ("Enter alpha (used to determine attribute similarity, double): ");
-                double alpha = Double.parseDouble(scanner.nextLine ());
+                double alpha = Double.parseDouble(scanner.nextLine());
 
                 System.out.print ("Enter the slope (used to determine how likely it is to drop unsimilar data points, double): ");
-                double c = Double.parseDouble(scanner.nextLine() ());
+                double c = Double.parseDouble(scanner.nextLine());
 
                 System.out.print ("Enter the maximum velocity of the ants (double): ");
-                double vMax = Double.parseDouble(scanner.nextLine ());
+                double vMax = Double.parseDouble(scanner.nextLine());
 
-                ACO aco = new ACO ();
-                List<Cluster> clusters = aco.acoAlg(ants, iterations, size, alpha, c, vMax, data);
+                ACO.run(ants, iterations, size, alpha, c, vMax, data);
                 break;
-
         }
     }
 

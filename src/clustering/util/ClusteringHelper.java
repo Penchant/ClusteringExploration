@@ -1,8 +1,12 @@
+package clustering.util;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
-class ClusteringHelper {
+public class ClusteringHelper {
 
     /**
      * Returns the Cluster from clusters with the minimum distance to d1
@@ -10,7 +14,7 @@ class ClusteringHelper {
      * @param clusters The list of clusters
      * @return The cluster with the least distance
      */
-    static Cluster argMin(AttributeSet d1, Cluster[] clusters) {
+    public static Cluster argMin(AttributeSet d1, Cluster[] clusters) {
         Cluster cluster = null;
         double minDistance = Double.MAX_VALUE;
 
@@ -31,7 +35,7 @@ class ClusteringHelper {
      * @param d2 The second list of attributes
      * @return The distance
      */
-    static double distance(AttributeSet d1, AttributeSet d2) {
+    public static double distance(AttributeSet d1, AttributeSet d2) {
         return Math.sqrt(IntStream.range(0, d1.size()).mapToDouble(i -> Math.pow(d1.attributes.get(i) - d2.attributes.get(i), 2)).sum());
     }
 
@@ -41,7 +45,7 @@ class ClusteringHelper {
      * @param newCentroids The list of new centroids
      * @return Boolean of if all centroids are equal or not
      */
-    static boolean areAllCentroidsEqual(List<Centroid> oldCentroids, List<Centroid> newCentroids) {
+    public static boolean areAllCentroidsEqual(List<Centroid> oldCentroids, List<Centroid> newCentroids) {
         if (oldCentroids.size() != newCentroids.size()) return false;
 
         // Check if there are any centroids that are not equal
@@ -58,13 +62,21 @@ class ClusteringHelper {
     }
 
     /**
+     * Calculates and returns a list of all the centroids of the clusters
+     * @return A list of all the centroids of the clusters
+     */
+    public static List<Centroid> centroids(Cluster[] clusters) {
+        return Stream.of(clusters).map(i -> i.centroid.copy()).collect(Collectors.toList());
+    }
+
+    /**
      * Calculates all the values in D within distance epsilon from AttributeSet p
      * @param D The list of AttributeSets
      * @param p The AttributeSet you want all elements within the distance from
      * @param epsilon The distance
      * @return A list of all values in D within distance epsilon from AttributeSet p
      */
-    static List<AttributeSet> valuesWithinDistance(List<AttributeSet> D, AttributeSet p, double epsilon) {
+    public static List<AttributeSet> valuesWithinDistance(List<AttributeSet> D, AttributeSet p, double epsilon) {
         List<AttributeSet> valuesWithinDistance = new ArrayList<>();
         for (AttributeSet set : D) {
             if (ClusteringHelper.distance(p, set) < epsilon) {
