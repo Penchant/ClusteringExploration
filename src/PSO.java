@@ -1,11 +1,10 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.Vector;
 
-public class PSO {
-    private List<Particle> swarm = new Vector<Particle>();
-    private List<double []> pBestLoc = new Vector<double []>();
+class PSO {
+    private List<Particle> swarm = new Vector<>();
+    private List<double[]> pBestLoc = new Vector<>();
     private double[] pBest;
     private double[] fitnessList;
     private double[] gBestLoc;
@@ -21,7 +20,7 @@ public class PSO {
     List<AttributeSet> data;
     int DIMENSION;
 
-    public PSO(List<AttributeSet> data, int ITERATION, int NUM_OF_PARTICLES, int K, double C1, double C2 ) {
+    PSO(List<AttributeSet> data, int ITERATION, int NUM_OF_PARTICLES, int K, double C1, double C2) {
         this.data = data;
         this.ITERATION = ITERATION;
         this.NUM_OF_PARTICLES = NUM_OF_PARTICLES;
@@ -35,9 +34,7 @@ public class PSO {
         run();
     }
 
-    Random numGenerator = new Random();
-
-    public void updateClusters(Particle p) {
+    void updateClusters(Particle p) {
 //        Logger.info("Clustering data to centroids");
         // Clear members
 
@@ -84,39 +81,36 @@ public class PSO {
         p.setCluster(clusters);
     }
 
-    //Updating fitness for each particle
-    public double updateFitness(Particle p){
-        double fitness = 0;
+    // Updating fitness for each particle
+    double updateFitness(Particle p){
+        double fitness;
         double temp = 0;
         double temp1 = 0;
 
-        //Summing distance from C_ij to AttributeSet_p divided by |C_ij|
+        // Summing distance from C_ij to AttributeSet_p divided by |C_ij|
         for (int i = 0; i < K; i++) {
-           for (AttributeSet a: p.getClusters()[i].members ){
-                temp += ClusteringHelper.distance(data.get(i), a)/p.getClusters()[i].members.size();
+           for (AttributeSet a : p.getClusters()[i].members) {
+                temp += ClusteringHelper.distance(data.get(i), a) / p.getClusters()[i].members.size();
             }
             temp1 += temp;
             temp = 0;
         }
-        fitness = temp1/DIMENSION;
+        fitness = temp1 / DIMENSION;
         return fitness;
     }
 
     /**
      * Initializing Swarm
      */
-    public void initializeSwarm() {
+    void initializeSwarm() {
         Particle p;
-        List<Centroid> centroids;
         double[] velocity = new double[DIMENSION];
         double[] position = new double[DIMENSION];
 
-        //Init random centroids, velocities, and positions
+        // Init random centroids, velocities, and positions
         for (int i = 0; i < NUM_OF_PARTICLES; i++) {
             p = new Particle();
-            Cluster cluster = null;
             clusters = new Cluster[K];
-
 
             Logger.info("Randomly initializing centroids");
             // Init mu_i ... mu_k randomly
@@ -129,8 +123,6 @@ public class PSO {
 
                 clusters[k].centroid = new Centroid(vals);
             }
-//            p.setCluster(clusters);
-
 
             Logger.info("Clustering data to centroids");
             // for all x in D do
@@ -175,21 +167,23 @@ public class PSO {
             p.setCluster(clusters);
 
             for (int j = 0; j < DIMENSION; j++) {
-                velocity[j] = Math.random()*2;
+                velocity[j] = Math.random() * 2;
             }
+
             p.setVelocity(velocity);
+
             for (int k = 0; k < DIMENSION; k++) {
-                position[k] = Math.random()*2;
+                position[k] = Math.random() * 2;
             }
+
             p.setLoc(position);
 
             swarm.add(p);
-
-            }
+        }
 
     }
 
-    public int findMinIndex(double [] list) {
+    int findMinIndex(double [] list) {
         int minIndex = 0;
         double min = list[0];
 
@@ -203,15 +197,14 @@ public class PSO {
         return minIndex;
     }
 
-    public void run() {
+    void run() {
         initializeSwarm();
-//        updateClusters();
-        //For each particle, update fitness
+        // For each particle, update fitness
         for(int i = 0; i < NUM_OF_PARTICLES; i++) {
             fitnessList[i] = updateFitness(swarm.get(i));
         }
 
-        //Creating pBest and pBestLoc list
+        // Creating pBest and pBestLoc list
         for (int i = 0; i < NUM_OF_PARTICLES; i++) {
             pBest[i] = fitnessList[i];
             pBestLoc.add(swarm.get(i).getLoc());
@@ -220,7 +213,7 @@ public class PSO {
         double w;
 
         while(epochs < ITERATION) {
-            //Update pBest
+            // Update pBest
             for (int i = 0; i < NUM_OF_PARTICLES; i++) {
                 if(fitnessList[i] < pBest[i]) {
                     pBest[i] = fitnessList[i];
@@ -228,26 +221,26 @@ public class PSO {
                 }
             }
 
-
-            //Update gBest
+            // Update gBest
             int bestParticleIndex = findMinIndex(fitnessList);
-            if( epochs == 0 || fitnessList[bestParticleIndex] < gBest) {
+            if (epochs == 0 || fitnessList[bestParticleIndex] < gBest) {
                 gBest = fitnessList[bestParticleIndex];
                 gBestLoc = swarm.get(bestParticleIndex).getLoc();
             }
 
-            //For each particle, update clusters
+            // For each particle, update clusters
             for(int i = 0; i < NUM_OF_PARTICLES; i++) {
                 fitnessList[i] = updateFitness(swarm.get(i));
             }
-            for(Particle p: swarm) {
+
+            for(Particle p : swarm) {
                 updateClusters(p);
             }
 
-            //Momentum term
-            w = 1-(((double) epochs) / ITERATION);
+            // Momentum term
+            w = 1 - ((double) epochs / ITERATION);
 
-            //Updating Velocity
+            // Updating Velocity
             for (int i = 0; i < NUM_OF_PARTICLES; i++) {
                 double r1 = Math.random();
                 double r2 = Math.random();
@@ -255,33 +248,32 @@ public class PSO {
                 Particle p = swarm.get(i);
 
                 double[] newVelocity = new double[DIMENSION];
-                for (int j = 0; j < DIMENSION ; j++) {
+                for (int j = 0; j < DIMENSION; j++) {
                     newVelocity[j] = (w * p.getVelocity()[j]) + (r1 * C1) * (pBestLoc.get(i)[j] - p.getLoc()[j]) +
                             (r2 * C2) * (gBestLoc[j] - p.getLoc()[j]);
                 }
+
                 p.setVelocity(newVelocity);
 
-                //Updating Location
+                // Updating Location
                 double[] newLocation = new double[DIMENSION];
                 for (int j = 0; j < DIMENSION; j++) {
                     newLocation[j] = p.getLoc()[j] + newVelocity[j];
                 }
+
                 p.setLoc(newLocation);
+
             }
+
             System.out.println("Epoch: " + epochs);
 
             for (int i = 0; i < K; i++) {
-                System.out.println("Best Particle Centroids: " + swarm.get(bestParticleIndex).getClusters()[i].centroid);
+                Logger.info("Best Particle Centroids: " + swarm.get(bestParticleIndex).getClusters()[i].centroid);
             }
 
             epochs++;
-
         }
-
-
-
     }
-
 
 }
 
