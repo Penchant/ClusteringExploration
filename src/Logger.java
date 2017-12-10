@@ -7,17 +7,17 @@ class Logger {
 
     static LoggingLevel level = LoggingLevel.INFO;
 
-    static void info(String msg) {
+    static void info(Object msg) {
         if (level == LoggingLevel.INFO) {
             System.out.println(msg);
         }
     }
 
-    static void important(String msg) {
+    static void important(Object msg) {
         System.out.println(msg);
     }
 
-    static void severe(String msg) {
+    static void severe(Object msg) {
         System.err.println(msg);
     }
 
