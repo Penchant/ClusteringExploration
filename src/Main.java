@@ -107,12 +107,12 @@ public class Main {
                 System.out.print("Enter number of clusters per particle (Integer): ");
                 k = Integer.parseInt(scanner.nextLine());
 
-                System.out.print("Enter constant one (double [0,4]): ");
+                System.out.print("Enter tunable constant one (double [0,4]): ");
                 int c1 = Integer.parseInt(scanner.nextLine());
 
-                System.out.print("Enter constant one (double [0,4]): ");
+                System.out.print("Enter tunable constant two (double [0,4]): ");
                 int c2 = Integer.parseInt(scanner.nextLine());
-                
+
                 PSO pso = new PSO(data, iteration, particles, k, c1, c2);
                 break;
             case aco: break;
