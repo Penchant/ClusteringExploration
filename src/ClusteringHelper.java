@@ -59,7 +59,6 @@ class ClusteringHelper {
         return true;
     }
 
-
     /**
      * Calculates and returns a list of all the centroids of the clusters
      * @return A list of all the centroids of the clusters
@@ -68,23 +67,20 @@ class ClusteringHelper {
         return Stream.of(clusters).map(i -> i.centroid.copy()).collect(Collectors.toList());
     }
 
-    static List<Centroid> randomCentroids(List<AttributeSet> D, Cluster[] clusters, int k) {
-        clusters = new Cluster[k];
-
-        List<Centroid> lastCentroid = new ArrayList<>();
-
-        Logger.info("Randomly initializing centroids");
-        // Init mu_i ... mu_k randomly
-        for (int i = 0; i < clusters.length; i++) {
-            clusters[i] = new Cluster(k);
-            List<Double> vals = new ArrayList<>();
-            for (int j = 0; j < D.get(0).size(); j++) {
-                vals.add(Math.random());
+    /**
+     * Calculates all the values in D within distance epsilon from AttributeSet p
+     * @param D The list of AttributeSets
+     * @param p The AttributeSet you want all elements within the distance from
+     * @param epsilon The distance
+     * @return A list of all values in D within distance epsilon from AttributeSet p
+     */
+    static List<AttributeSet> valuesWithinDistance(List<AttributeSet> D, AttributeSet p, double epsilon) {
+        List<AttributeSet> valuesWithinDistance = new ArrayList<>();
+        for (AttributeSet set : D) {
+            if (ClusteringHelper.distance(p, set) < epsilon) {
+                valuesWithinDistance.add(set);
             }
-
-            clusters[i].centroid = new Centroid(vals);
         }
-
-        return ClusteringHelper.centroids(clusters);
+        return valuesWithinDistance;
     }
 }
