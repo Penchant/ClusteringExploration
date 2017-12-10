@@ -222,7 +222,7 @@ public class PSO {
         return minIndex;
     }
 
-    //Running PSO algorithm
+    // Running PSO algorithm
     public void run() {
         initializeSwarm();
         // For each particle, update fitness
