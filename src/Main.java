@@ -112,7 +112,7 @@ public class Main {
         // Get what data set to use
         List<AttributeSet> data = getDataSelection(scanner);
 
-        // Execute the algoirthm
+        // Execute the algorithm
         executeAlgorithm(scanner, menuSelection, data);
     }
 }
