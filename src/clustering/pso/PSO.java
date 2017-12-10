@@ -24,6 +24,15 @@ public class PSO {
     List<AttributeSet> data;
     int DIMENSION;
 
+    /**
+     * Runs PSO algorithm
+     * @param data Data to be ran
+     * @param ITERATION Number of iterations to be ran
+     * @param NUM_OF_PARTICLES Number of particles in the swarm
+     * @param K Number of desired clusters per particle
+     * @param C1 Tunable constant for velocity update
+     * @param C2 Tunable constant for velocity update
+     */
     public PSO(List<AttributeSet> data, int ITERATION, int NUM_OF_PARTICLES, int K, double C1, double C2) {
         this.data = data;
         this.ITERATION = ITERATION;
@@ -38,6 +47,10 @@ public class PSO {
         run();
     }
 
+    /**
+     * Recalculates cluster members as well as new centroids
+     * @param p Particle containing clusters to be updated
+     */
     public void updateClusters(Particle p) {
 //        Logger.info("Clustering data to centroids");
         // Clear members
@@ -85,7 +98,10 @@ public class PSO {
         p.setCluster(clusters);
     }
 
-    // Updating fitness for each particle
+    /**
+     * @param p Particle to have fitness calculated on
+     * @return updated fitness value of particle p
+     */
     public double updateFitness(Particle p){
         double fitness;
         double temp = 0;
@@ -104,7 +120,8 @@ public class PSO {
     }
 
     /**
-     * Initializing Swarm
+     * Initializing Swarm with K number of random centroids and clusters and N number of particles
+     * Initializes random position and velocity for each particle
      */
     public void initializeSwarm() {
         Particle p;
@@ -187,6 +204,10 @@ public class PSO {
 
     }
 
+    /**
+     * @param list list of double values
+     * @return minIndex The index of the minimum value of list
+     */
     public int findMinIndex(double [] list) {
         int minIndex = 0;
         double min = list[0];
@@ -201,6 +222,7 @@ public class PSO {
         return minIndex;
     }
 
+    //Running PSO algorithm
     public void run() {
         initializeSwarm();
         // For each particle, update fitness
@@ -272,7 +294,7 @@ public class PSO {
             System.out.println("Epoch: " + epochs);
 
             for (int i = 0; i < K; i++) {
-                Logger.info("Best Particle Centroids: " + swarm.get(bestParticleIndex).getClusters()[i].centroid);
+                Logger.info("Best Particle Centroid " + i + ": " + swarm.get(bestParticleIndex).getClusters()[i].centroid);
             }
 
             epochs++;
