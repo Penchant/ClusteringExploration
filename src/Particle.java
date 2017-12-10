@@ -4,8 +4,9 @@ public class Particle {
     private double fitnessVal;
     private double[] velocity;
     private double[] location;
-    private double[] fitness;
+    private double fitness;
     private List<Centroid> centroids;
+    private Cluster[] clusters;
 
     public Particle(){
 
@@ -36,14 +37,21 @@ public class Particle {
         return location;
     }
     //Update fitness values
-    public double[] getFitness() {
+    public void setFitness(double fitness) {
         //fitness function to be defined
-
-        return fitness;
+        this.fitness = fitness;
     }
 
-    public void setCentroids(List<Centroid> centroids) {
-        this.centroids = centroids;
+    public List<Centroid> getCentroids() {
+        return centroids;
+    }
+
+    public void setCluster(Cluster[] clusters) {
+        this.clusters = clusters;
+    }
+
+    public Cluster[] getClusters() {
+        return clusters;
     }
 
 

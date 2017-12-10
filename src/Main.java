@@ -3,12 +3,14 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        Logger.level = Logger.LoggingLevel.IMPORTANT;
-        List<Centroid> centroids = KMeans.kmeans(genSamples(), 4);
-        // List<Centroid> centroids = KMeans.kmeans(DataLoader.loadData("a1_raw.csv"), 8);
-        centroids.stream().forEach(i -> {
-            System.out.println(i);
-        });
+//        Logger.level = Logger.LoggingLevel.IMPORTANT;
+//        List<Centroid> centroids = KMeans.kmeans(genSamples(), 4);
+//        // List<Centroid> centroids = KMeans.kmeans(DataLoader.loadData("a1_raw.csv"), 8);
+//        centroids.stream().forEach(i -> {
+//            System.out.println(i);
+//        });
+
+        PSO pso = new PSO(genSamples(), 100, 20, 3, 2, 2);
     }
 
     static List<AttributeSet>  genSamples() {
