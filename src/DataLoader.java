@@ -1,14 +1,15 @@
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
-public class DataLoader {
+class DataLoader {
 
     // Loads the data from a csv or .data file and returns it as a List<List<Double>>
-    public static List<List<Double>> loadData(String path) {
-        List<List<Double>> out = new ArrayList<>();
+    static List<AttributeSet> loadData(String path) {
+        List<AttributeSet> out = new ArrayList<>();
 
         try {
             File file = new File(path);
@@ -24,11 +25,9 @@ public class DataLoader {
                 String[] values = line.split(",");
 
                 // Get each comma separated value and add to our list
-                List<Double> samples = new ArrayList<>();
+                AttributeSet samples = new AttributeSet();
                 // Limit to not include the class label
-                Stream.of(values).limit(values.length - 2).forEach(i -> {
-                    samples.add(Double.parseDouble(i));
-                });
+                Stream.of(values).limit(values.length - 2).forEach(i -> samples.attributes.add(Double.parseDouble(i)));
                 out.add(samples);
             }
         } catch (Exception e) {
@@ -36,6 +35,51 @@ public class DataLoader {
         }
 
         return out;
+    }
+
+    /**
+     * Returns a set of two square clusters
+     * @return A set of two square clusters
+     */
+    static List<AttributeSet>  genTwoSquaresSample() {
+        List<AttributeSet> values = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                List<Double> n = new ArrayList<>();
+                List<Double> n2 = new ArrayList<>();
+                n.add(i + 0.5);
+                n.add(j + 0.5);
+                n2.add(i + 50.5);
+                n2.add(j + 50.5);
+                values.add(new AttributeSet(n));
+                values.add(new AttributeSet(n2));
+            }
+        }
+
+        return values;
+    }
+
+    /**
+     * Returns large circular clusters for each radius inputted
+     * @return N Large clusters
+     */
+    static List<AttributeSet>  genCircleSample(double ... radii) {
+        List<AttributeSet> values = new ArrayList<>();
+        for (int i = 0; i < 360; i++) {
+            final double radians = Math.toRadians(i);
+            Arrays.stream(radii).forEach(r -> {
+                double x = Math.cos(radians);
+                double y = Math.sin(radians);
+
+                List<Double> n = new ArrayList<>();
+                n.add(x * r);
+                n.add(y * r);
+                values.add(new AttributeSet(n));
+
+            });
+        }
+
+        return values;
     }
 
 }

@@ -1,5 +1,4 @@
-import org.w3c.dom.Attr;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -56,5 +55,22 @@ class ClusteringHelper {
 
         // All centroids must match, return true
         return true;
+    }
+
+    /**
+     * Calculates all the values in D within distance epsilon from AttributeSet p
+     * @param D The list of AttributeSets
+     * @param p The AttributeSet you want all elements within the distance from
+     * @param epsilon The distance
+     * @return A list of all values in D within distance epsilon from AttributeSet p
+     */
+    static List<AttributeSet> valuesWithinDistance(List<AttributeSet> D, AttributeSet p, double epsilon) {
+        List<AttributeSet> valuesWithinDistance = new ArrayList<>();
+        for (AttributeSet set : D) {
+            if (ClusteringHelper.distance(p, set) < epsilon) {
+                valuesWithinDistance.add(set);
+            }
+        }
+        return valuesWithinDistance;
     }
 }
