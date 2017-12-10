@@ -98,7 +98,29 @@ public class Main {
                 break;
             case cl: break;
             case pso: break;
-            case aco: break;
+            case aco: 
+                System.out.print("Enter number of ants: ");
+                int ants = Integer.parseInt(scanner.nextLine());
+
+                System.out.print("Enter number of iterations: ");
+                int iterations = Integer.parseInt (scanner.nextLine ());
+
+                System.out.print("Enter the size of the local neighbor search (double): ");
+                double size = Double.parseDouble(scanner.nextLine ());
+
+                System.out.print ("Enter alpha (used to determine attribute similarity, double): ");
+                double alpha = Double.parseDouble(scanner.nextLine ());
+
+                System.out.print ("Enter the slope (used to determine how likely it is to drop unsimilar data points, double): ");
+                double c = Double.parseDouble(scanner.nextLine() ());
+
+                System.out.print ("Enter the maximum velocity of the ants (double): ");
+                double vMax = Double.parseDouble(scanner.nextLine ());
+
+                ACO aco = new ACO ();
+                List<Cluster> clusters = aco.acoAlg(ants, iterations, size, alpha, c, vMax, data);
+                break;
+
         }
     }
 
