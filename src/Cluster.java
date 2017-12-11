@@ -29,4 +29,11 @@ class Cluster {
         centroid = new Centroid();
         members = new ArrayList<>();
     }
+
+    public boolean equals(Cluster other){
+        if(other == null){
+            return false;
+        }
+        return this.members.stream().allMatch((member) -> other.members.contains(member));
+    }
 }
