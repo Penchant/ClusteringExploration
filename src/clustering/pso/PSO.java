@@ -2,9 +2,7 @@ package clustering.pso;
 
 import clustering.util.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 public class PSO {
     private List<Particle> swarm = new Vector<>();
@@ -44,7 +42,6 @@ public class PSO {
         gBestLoc = new double [DIMENSION];
         pBest = new double[NUM_OF_PARTICLES];
         fitnessList = new double [NUM_OF_PARTICLES];
-        run();
     }
 
     /**
@@ -223,7 +220,8 @@ public class PSO {
     }
 
     // Running PSO algorithm
-    public void run() {
+    public Map<Integer, List<AttributeSet>> run() {
+        Cluster[] out = null;
         initializeSwarm();
         // For each particle, update fitness
         for(int i = 0; i < NUM_OF_PARTICLES; i++) {
@@ -295,10 +293,19 @@ public class PSO {
 
             for (int i = 0; i < K; i++) {
                 Logger.info("Best Particle Centroid " + i + ": " + swarm.get(bestParticleIndex).getClusters()[i].centroid);
+                out = swarm.get(bestParticleIndex).getClusters();
             }
 
             epochs++;
         }
+
+        Map<Integer, List<AttributeSet>> mapOut = new HashMap<>();
+
+        for (int i = 0; i < out.length; i++) {
+            mapOut.put(i, out[i].members);
+        }
+
+        return mapOut;
     }
 
 }
