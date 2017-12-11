@@ -257,8 +257,7 @@ public class ClusteringHelper {
                 ++trueNegative;
         }
 
-        double randIndex = (double) (truePositive + trueNegative) / NChooseR(randList.size(), 2);
-        return randIndex;
+        return (double) truePositive / randList.size();
     }
 
     public static int NChooseR(int n, int r) {
