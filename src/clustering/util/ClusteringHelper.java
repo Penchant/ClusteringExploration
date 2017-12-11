@@ -89,7 +89,7 @@ public class ClusteringHelper {
     }
 
     /**
-     * Computers a rand index double signifying how similar to clusterings are
+     * Computes a rand index double signifying how similar to clusterings are
      * @param clusters The first cluster
      * @param clusters2 The second cluster
      * @return The rand index value
