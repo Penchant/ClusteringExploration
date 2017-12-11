@@ -90,7 +90,7 @@ public class Main {
                 System.out.print("Enter k (How many clusters, integer): ");
 
                 int k = Integer.parseInt(scanner.nextLine());
-                KMeans.run(data, k);
+                Map<Integer, List<AttributeSet>> clusters = KMeans.run(data, k);
                 break;
             case db:
                 System.out.print("Enter epsilon (Max distance between points, double): ");
@@ -99,7 +99,7 @@ public class Main {
                 System.out.print("Enter minPts (Min amount of points required, integer): ");
                 int minPts = Integer.parseInt(scanner.nextLine());
 
-                Map<Integer, List<AttributeSet>> clusters = DBScan.run(data, epsilon, minPts);
+                clusters = DBScan.run(data, epsilon, minPts);
                 clusters.keySet().forEach(s -> Logger.info(clusters.get(s)));
                 break;
             case cl: break;
@@ -119,7 +119,9 @@ public class Main {
                 System.out.print("Enter tunable constant two (double [0,4]): ");
                 double c2 = Double.parseDouble(scanner.nextLine());
 
-                new PSO(data, iteration, particles, k, c1, c2);
+                PSO pso = new PSO(data, iteration, particles, k, c1, c2);
+                clusters = pso.run();
+                clusters.keySet().forEach(s -> Logger.important(s + ", " + clusters.get(s).size()));
                 break;
             case aco: 
                 System.out.print("Enter number of ants: ");
@@ -140,7 +142,7 @@ public class Main {
                 System.out.print ("Enter the maximum velocity of the ants (double): ");
                 double vMax = Double.parseDouble(scanner.nextLine());
 
-                ACO.run(ants, iterations, size, alpha, c, vMax, data);
+                clusters = ACO.run(ants, iterations, size, alpha, c, vMax, data);
                 break;
         }
     }
