@@ -22,13 +22,17 @@ public class KMeans {
 
         List<Centroid> lastCentroid = new ArrayList<>();
 
+        Centroid stats = new Centroid((ArrayList<AttributeSet>) D);
+
         Logger.info("Randomly initializing centroids");
         // Init mu_i ... mu_k randomly
         for (int i = 0; i < clusters.length; i++) {
             clusters[i] = new Cluster(k);
             List<Double> vals = new ArrayList<>();
             for (int j = 0; j < D.get(0).size(); j++) {
-                vals.add(Math.random());
+
+                double newVal = stats.values.attributes.get(j) + stats.stdDev.attributes.get(j) * (Math.random() - .5) * 2;
+                vals.add(newVal);
             }
 
             clusters[i].centroid = new Centroid(vals);

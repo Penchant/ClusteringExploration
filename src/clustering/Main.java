@@ -89,6 +89,9 @@ public class Main {
 
                 int k = Integer.parseInt(scanner.nextLine());
                 Map<Integer, List<AttributeSet>> clusters = KMeans.run(data, k);
+                for (int i : clusters.keySet()) {
+                    System.out.println(i + ":" + clusters.get(i).size());
+                }
                 break;
             case db:
                 System.out.print("Enter epsilon (Max distance between points, double): ");
