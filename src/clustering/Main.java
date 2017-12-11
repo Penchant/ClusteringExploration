@@ -142,7 +142,7 @@ public class Main {
                 System.out.print ("Enter the maximum velocity of the ants (double): ");
                 double vMax = Double.parseDouble(scanner.nextLine());
 
-                Map<Integer, List<AttributeSet>> clusters = ACO.run(ants, iterations, size, alpha, c, vMax, data);
+                clusters = ACO.run(ants, iterations, size, alpha, c, vMax, data);
                 break;
         }
     }

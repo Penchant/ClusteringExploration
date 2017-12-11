@@ -24,6 +24,8 @@ public class DataLoader {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
 
+                if (line.isEmpty()) continue;
+
                 String[] values = line.split(",");
 
                 // Get each comma separated value and add to our list
