@@ -48,7 +48,7 @@ public class ACO {
             } else
                 ant.loaded = false;
             ant.velocity = randomInRange(1, vMax);
-            ant.maxDistance = Math.sqrt(Math.pow(size, 2) + Math.pow(size, 2));
+            ant.maxDistance = Math.sqrt(Math.pow(size, 2.0) + Math.pow(size, 2.0));
             ant.id = i + 1;
             ants.add(ant);
         }
@@ -104,7 +104,7 @@ public class ACO {
             ACOData current = dataList.get(i);
             if (current.cluster == -1) {
                 for (ACOData neighbor : dataList) {
-                    if (neighbor.id != current.id && neighbor.cluster == -1 && distance(current, neighbor) < (length / 2)) {
+                    if (neighbor.id != current.id && neighbor.cluster == -1 && distance(current, neighbor) < (length / 2.0)) {
                         if (!clusterFound) {
                             clusterFound = true;
                             ++cluster;
@@ -119,7 +119,7 @@ public class ACO {
                         List<AttributeSet> setList = clusters.get (current.cluster);
                         setList.add (set);
                         clusters.put (current.cluster, setList);
-                    } else if (neighbor.id != current.id && neighbor.cluster != -1 && !clusterFound && distance(current, neighbor) < (length / 2)) {
+                    } else if (neighbor.id != current.id && neighbor.cluster != -1 && !clusterFound && distance(current, neighbor) < (length / 2.0)) {
                         clusterFound = true;
                         current.cluster = neighbor.cluster;
                         AttributeSet set = new AttributeSet(current.data);
@@ -155,14 +155,14 @@ public class ACO {
     private static double averageSimilarity(ACOData found, List<ACOData> dataList, double alpha, double antVelocity, double vMax, double size) {
         double sum = 0;
         for (ACOData neighbor : dataList) {
-            if (neighbor.id != found.id && distance(found, neighbor) < (size / 2)) {
+            if (neighbor.id != found.id && distance(found, neighbor) < (size / 2.0)) {
                 double attDist = attributeDistance(found, neighbor);
-                double quotient = 1 - (attDist / (alpha * (1 + (antVelocity - 1) / vMax)));
+                double quotient = 1 - (attDist / (alpha * (1.0 + (antVelocity - 1.0) / vMax)));
                 sum += quotient;
             }
         }
-        double total = (1 / Math.pow(size, 2)) * sum;
-        return Math.max(0, total);
+        double total = (1.0 / Math.pow(size, 2.0)) * sum;
+        return Math.max(0.0, total);
     }
 
     /***
@@ -174,7 +174,7 @@ public class ACO {
      * returns the distance
      */
     private static double distance(ACOData first, ACOData second) {
-        return Math.sqrt(Math.pow((second.x - first.x), 2) + Math.pow((second.y - first.y), 2));
+        return Math.sqrt(Math.pow((second.x - first.x), 2.0) + Math.pow((second.y - first.y), 2.0));
     }
 
     /****
@@ -231,8 +231,8 @@ public class ACO {
      * return sigmoid value
      */
     private static double Sigmoid(double x, double c) {
-        double e = Math.exp(-1 * c * x);
-        return (1 - e) / (1 + e);
+        double e = Math.exp(-1.0 * c * x);
+        return (1.0 - e) / (1.0 + e);
     }
 
     /**
