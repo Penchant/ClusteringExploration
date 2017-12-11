@@ -1,15 +1,17 @@
+package clustering.util;
+
 import java.util.ArrayList;
 import java.util.List;
 
-class Cluster {
-    int id;
+public class Cluster {
 
-    Centroid centroid;
+    public int id;
 
-    List<AttributeSet> members;
+    public Centroid centroid;
 
-    Cluster(int length) {
-        this.id = id;
+    public List<AttributeSet> members;
+
+    public Cluster(int length) {
         centroid = new Centroid();
         members = new ArrayList<>();
 
@@ -24,14 +26,8 @@ class Cluster {
         members = new ArrayList<>();
     }
 
-    public Cluster(int length, int id) {
-        this.id = id;
-        centroid = new Centroid();
-        members = new ArrayList<>();
-    }
-
-    public boolean equals(Cluster other){
-        if(other == null){
+    public boolean equals(Cluster other) {
+        if (other == null) {
             return false;
         }
         return this.members.stream().allMatch((member) -> other.members.contains(member));

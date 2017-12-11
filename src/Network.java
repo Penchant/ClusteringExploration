@@ -1,19 +1,10 @@
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.ToDoubleFunction;
-import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
+import clustering.util.*;
 import static java.util.Comparator.comparingDouble;
-import static java.util.Comparator.comparingInt;
 
 public class Network implements Runnable {
 
@@ -174,7 +165,6 @@ public class Network implements Runnable {
                     int networkWinner = IntStream.range(0, networkOutput.size()).boxed()
                             .max(comparingDouble(networkOutput::get))
                             .get();
-                    example.networkWinner = networkWinner;
 
                     this.clusters.get(networkWinner).members.add(example);
                     List<Double> target = new ArrayList<>();
@@ -307,41 +297,41 @@ public class Network implements Runnable {
      * Calculate percent correct for list of outputs for a given Chromosome
      * @return the percentage of correctly guessed classes
      */
-    public double getPercentCorrect(){
-        int numCorrect = 0;
-        double temp;
-        double max = 0;
-
-        if (percentCorrect >= 0) {
-            return percentCorrect;
-        }
-
-        List<List<Double>> outputs = new ArrayList<>();
-        // For each example we set the input layer's node's inputs to the example value,
-        // then calculate the output for that example.
-        examples.forEach(example -> {
-            List<Double> networkOutput = forwardPropagate(example);
-            outputs.add(networkOutput);
-        });
-        //Setting greatest probability to 1, rest to zero of outputs
-        for (int i = 0; i < outputs.size(); i++) {
-            for (int j = 0; j < outputs.get(i).size(); i++) {
-                temp = outputs.get(i).get(j);
-                if(temp > max){
-                    max = temp;
-                    outputs.get(i).set(j, 1d);
-                    //TODO Review this ->
-                    if(examples.get(i).networkWinner == j){
-                        numCorrect++;
-                    }
-                }else;
-                outputs.get(i).set(j, 0d);
-            }
-        }
-        percentCorrect =  numCorrect / testSet.size();
-
-        return percentCorrect;
-    }
+//    public double getPercentCorrect(){
+//        int numCorrect = 0;
+//        double temp;
+//        double max = 0;
+//
+//        if (percentCorrect >= 0) {
+//            return percentCorrect;
+//        }
+//
+//        List<List<Double>> outputs = new ArrayList<>();
+//        // For each example we set the input layer's node's inputs to the example value,
+//        // then calculate the output for that example.
+//        examples.forEach(example -> {
+//            List<Double> networkOutput = forwardPropagate(example);
+//            outputs.add(networkOutput);
+//        });
+//        //Setting greatest probability to 1, rest to zero of outputs
+//        for (int i = 0; i < outputs.size(); i++) {
+//            for (int j = 0; j < outputs.get(i).size(); i++) {
+//                temp = outputs.get(i).get(j);
+//                if(temp > max){
+//                    max = temp;
+//                    outputs.get(i).set(j, 1d);
+//                    //TODO Review this ->
+//                    if(examples.get(i).networkWinner == j){
+//                        numCorrect++;
+//                    }
+//                }else;
+//                outputs.get(i).set(j, 0d);
+//            }
+//        }
+//        percentCorrect =  numCorrect / testSet.size();
+//
+//        return percentCorrect;
+//    }
 
 
     /**
