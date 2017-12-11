@@ -119,10 +119,10 @@ public class Main {
                 k = Integer.parseInt(scanner.nextLine());
 
                 System.out.print("Enter tunable constant one (double [0,4]): ");
-                double c1 = Integer.parseInt(scanner.nextLine());
+                double c1 = Double.parseDouble(scanner.nextLine());
 
                 System.out.print("Enter tunable constant two (double [0,4]): ");
-                double c2 = Integer.parseInt(scanner.nextLine());
+                double c2 = Double.parseDouble(scanner.nextLine());
 
                 new PSO(data, iteration, particles, k, c1, c2);
                 break;
