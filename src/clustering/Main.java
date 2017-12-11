@@ -89,7 +89,7 @@ public class Main {
 
                 int k = Integer.parseInt(scanner.nextLine());
                 Map<Integer, List<AttributeSet>> clusters = KMeans.run(data, k);
-                
+
                 System.out.println ("Rand Index: " + ClusteringHelper.computeRandIndex(clusters));
                 break;
             case db:
@@ -101,6 +101,8 @@ public class Main {
 
                 clusters = DBScan.run(data, epsilon, minPts);
                 clusters.keySet().forEach(s -> Logger.info(clusters.get(s)));
+
+                Logger.important ("Rand Index: " + ClusteringHelper.computeRandIndex(clusters));
                 break;
             case cl:
                 System.out.print("Enter number of clusters (integer)");
@@ -109,6 +111,7 @@ public class Main {
                 clusters = cl.mapOut;
                 clusters.keySet().forEach(s -> Logger.info(clusters.get(s)));
 
+                Logger.important ("Rand Index: " + ClusteringHelper.computeRandIndex(clusters));
                 break;
             case pso:
                 System.out.print("Enter number of iterations (Integer): ");

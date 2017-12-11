@@ -212,50 +212,49 @@ public class ClusteringHelper {
             }
         }
 
-        int truePositive = 0;
-        int trueNegative = 0;
+        List<Cluster> clustersList = clusters.entrySet().stream().map(entry -> {
+            Cluster c = new Cluster();
+            c.members = entry.getValue();
+            return c;
+        }).collect(Collectors.toList());
 
-        for (RandData dataPoint : randList) {
-            int inCluster = 0;
-            Map<Integer, Integer> wrongClusters = new HashMap<>();
-            double totalInDistance = 0;
-            Map<Integer, Double> wrongDistance = new HashMap<>();
-            for (RandData comparePoint : randList) {
-                if (dataPoint.id != comparePoint.id) {
-                    if (dataPoint.foundCluster == comparePoint.foundCluster) {
-                        double distance = attributeDistance(dataPoint, comparePoint);
-                        totalInDistance += distance;
-                        ++inCluster;
-                    } else {
-                        double distance = attributeDistance(dataPoint, comparePoint);
-                        if (!wrongDistance.containsKey(comparePoint.foundCluster))
-                            wrongDistance.put(comparePoint.foundCluster, 0.0);
-                        if (!wrongClusters.containsKey(comparePoint.foundCluster))
-                            wrongClusters.put(comparePoint.foundCluster, 0);
-                        wrongDistance.put(comparePoint.foundCluster, wrongDistance.get(comparePoint.foundCluster) + distance);
-                        wrongClusters.put(comparePoint.foundCluster, wrongClusters.get(comparePoint.foundCluster) + 1);
+        List<Centroid> centroids = clustersList.stream()
+                .map((entry) -> new Centroid((ArrayList<AttributeSet>) entry.members)).collect(Collectors.toList());
+         Double averageDistance = IntStream.range(0, clustersList.size()).mapToDouble(index ->
+                 clustersList.get(index).members.stream().mapToDouble((attribute) ->
+                         ClusteringHelper.distance(attribute, centroids.get(index).values)).sum()/clustersList.get(index).members.size())
+                 .sum()/clustersList.size();
+
+        int truePositive;
+        int trueNegative;
+
+            trueNegative = IntStream.range(0, randList.size()).map((index) ->{
+                return IntStream.range(randList.size() - index, randList.size()).map((index2) ->{
+                    double distance = ClusteringHelper.distance(randList.get(index).data, randList.get(index2).data);
+                    if(distance > averageDistance){
+                        if(randList.get(index).foundCluster != randList.get(index2).foundCluster){
+                            return 1;
+                        }
+                        else{
+                            return 0;
+                        }
                     }
-                }
-            }
-            double averageInCluster = totalInDistance / inCluster;
-            boolean foundBetterCluster = false;
-            for (Integer key : wrongDistance.keySet()) {
-                double averageOutCluster = wrongDistance.get(key) / wrongClusters.get(key);
-                if (averageOutCluster < averageInCluster) {
-                    dataPoint.trueCluster = key;
-                    foundBetterCluster = true;
-                }
-            }
-            if (!foundBetterCluster)
-                dataPoint.trueCluster = dataPoint.foundCluster;
-        }
+                    return 0;
+                }).sum();
+            }).sum();
 
-        for (RandData dataPoint : randList) {
-            if (dataPoint.trueCluster == dataPoint.foundCluster)
-                ++truePositive;
-            else
-                ++trueNegative;
-        }
+            truePositive = IntStream.range(0, randList.size()).map((index) ->{
+                return IntStream.range(randList.size() - index, randList.size()).map((index2) ->{
+                    double distance = ClusteringHelper.distance(randList.get(index).data, randList.get(index2).data);
+                    if(distance > averageDistance){
+                        return 0;
+                    }
+                    if(randList.get(index).foundCluster == randList.get(index2).foundCluster){
+                        return 1;
+                    }
+                    return 0;
+                }).sum();
+            }).sum();
 
         double randIndex = (double) (truePositive + trueNegative) / NChooseR(randList.size(), 2);
         return randIndex;

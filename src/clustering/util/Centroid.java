@@ -23,21 +23,22 @@ public class Centroid {
     public Centroid(ArrayList<AttributeSet> attributeSets){
         AttributeSet average = new AttributeSet();
         stdDev = new AttributeSet();
-        IntStream.range(0, attributeSets.get(0).attributes.size()).forEach(index -> average.attributes.add(0d));
-        IntStream.range(0, attributeSets.get(0).attributes.size()).forEach(index -> stdDev.attributes.add(0d));
+        if(attributeSets.size() > 0) {
+            IntStream.range(0, attributeSets.get(0).attributes.size()).forEach(index -> average.attributes.add(0d));
+            IntStream.range(0, attributeSets.get(0).attributes.size()).forEach(index -> stdDev.attributes.add(0d));
 
 
-        IntStream.range(0,attributeSets.get(0).attributes.size()).forEach( attributeIndex -> {
-                    double mean = IntStream.range(0, attributeSets.size()).mapToDouble(index -> attributeSets.get(index).attributes.get(attributeIndex)).sum();
-                    average.attributes.set(attributeIndex, mean / attributeSets.size());
+            IntStream.range(0, attributeSets.get(0).attributes.size()).forEach(attributeIndex -> {
+                        double mean = IntStream.range(0, attributeSets.size()).mapToDouble(index -> attributeSets.get(index).attributes.get(attributeIndex)).sum();
+                        average.attributes.set(attributeIndex, mean / attributeSets.size());
 
-                    double standardDev = Math.sqrt( IntStream.range(0, attributeSets.size())
-                            .mapToDouble(index -> Math.pow(attributeSets.get(index).attributes.get(attributeIndex) - average.attributes.get(attributeIndex), 2))
-                            .sum() / (attributeSets.size() - 1));
-                    stdDev.attributes.set(attributeIndex, standardDev);
-                }
-        );
-
+                        double standardDev = Math.sqrt(IntStream.range(0, attributeSets.size())
+                                .mapToDouble(index -> Math.pow(attributeSets.get(index).attributes.get(attributeIndex) - average.attributes.get(attributeIndex), 2))
+                                .sum() / (attributeSets.size() - 1));
+                        stdDev.attributes.set(attributeIndex, standardDev);
+                    }
+            );
+        }
         this.values = average;
     }
 
