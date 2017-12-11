@@ -1,10 +1,10 @@
+package clustering.competitiveLearning;
 
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
 
-class CompetitiveLearning {
+import clustering.util.*;
+
+public class CompetitiveLearning {
 
     public CompetitiveLearning(final List<Integer> hiddenLayers, int numOfClusters, List<AttributeSet> data){
 
