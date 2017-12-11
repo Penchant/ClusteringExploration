@@ -22,7 +22,7 @@ public class ACO {
      *
      * returns data in clusters
      */
-    public static List<Cluster> run(int antCount, int iterations, double length, double alpha, double slope, double vMax, List<AttributeSet> data) {
+    public static Map<Integer, List<AttributeSet>> run(int antCount, int iterations, double length, double alpha, double slope, double vMax, List<AttributeSet> data) {
         List<ACOData> dataList = new ArrayList<>();
         List<Ant> ants = new ArrayList<>();
         List<Integer> dataToPick = new ArrayList<>();
@@ -100,7 +100,7 @@ public class ACO {
         int cluster = 0;
         int isolated = -1;
         boolean clusterFound;
-        List<Cluster> clusters = new ArrayList<>();
+        Map<Integer, List<AttributeSet>> clusters = new HashMap<> ();
         // Determine clusters
         for (int i = 0; i < dataList.size(); i++) {
             clusterFound = false;
@@ -112,20 +112,18 @@ public class ACO {
                             clusterFound = true;
                             ++cluster;
                             current.cluster = cluster;
-                            AttributeSet set = new AttributeSet(current.data);
-                            Cluster clusterObject = new Cluster();
-                            clusterObject.members.add(set);
-                            clusterObject.id = cluster;
-                            clusters.add(clusterObject);
+                            AttributeSet set = new AttributeSet(current.data);                            
+							List<AttributeSet> setList = new ArrayList<> ();
+							setList.add (set);
+							clusters.put (cluster, setList);
                         }
                         for (int k = 0; k < clusters.size(); k++) {
                             if (clusters.get(k).id == cluster) {
                                 neighbor.cluster = current.cluster;
                                 AttributeSet set = new AttributeSet(neighbor.data);
-                                Cluster clusterObject = new Cluster();
-                                clusterObject.members.add(set);
-                                clusterObject.id = current.cluster;
-                                clusters.add(clusterObject);
+                                List<AttributeSet> setList = clusters.get (current.cluster);
+								setList.add (set);
+								clusters.put (current.cluster, setList);
                             }
                         }
 
@@ -133,20 +131,18 @@ public class ACO {
                         clusterFound = true;
                         current.cluster = neighbor.cluster;
                         AttributeSet set = new AttributeSet(current.data);
-                        Cluster clusterObject = new Cluster();
-                        clusterObject.members.add(set);
-                        clusterObject.id = neighbor.cluster;
-                        clusters.add(clusterObject);
+						List<AttributeSet> setList = clusters.get (neighbor.cluster);
+						setList.add (set);
+						clusters.put (neighbor.cluster);
                     }
                 }
                 if (!clusterFound) {
                     --isolated;
                     current.cluster = isolated;
                     AttributeSet set = new AttributeSet(current.data);
-                    Cluster clusterObject = new Cluster();
-                    clusterObject.members.add(set);
-                    clusterObject.id = isolated;
-                    clusters.add(clusterObject);
+					List<AttributeSet> setList = new ArrayList<> ();
+					setList.add (set);
+					clusters.put (isolated, setList);
                 }
             }
         }
