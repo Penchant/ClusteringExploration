@@ -9,8 +9,7 @@ public class ClusteringHelper {
 
     /**
      * Returns the Cluster from clusters with the minimum distance to d1
-     *
-     * @param d1       The set of attributes you want to get the min distance to from centroids
+     * @param d1 The set of attributes you want to get the min distance to from centroids
      * @param clusters The list of clusters
      * @return The cluster with the least distance
      */
@@ -31,7 +30,6 @@ public class ClusteringHelper {
 
     /**
      * Calculates the distance between two lists of attributes
-     *
      * @param d1 The first list of attributes
      * @param d2 The second list of attributes
      * @return The distance
@@ -42,7 +40,6 @@ public class ClusteringHelper {
 
     /**
      * Checks if all the centroids are equal
-     *
      * @param oldCentroids THe list of old centroids
      * @param newCentroids The list of new centroids
      * @return Boolean of if all centroids are equal or not
@@ -65,7 +62,6 @@ public class ClusteringHelper {
 
     /**
      * Calculates and returns a list of all the centroids of the clusters
-     *
      * @return A list of all the centroids of the clusters
      */
     public static List<Centroid> centroids(Cluster[] clusters) {
@@ -74,9 +70,8 @@ public class ClusteringHelper {
 
     /**
      * Calculates all the values in D within distance epsilon from AttributeSet p
-     *
-     * @param D       The list of AttributeSets
-     * @param p       The AttributeSet you want all elements within the distance from
+     * @param D The list of AttributeSets
+     * @param p The AttributeSet you want all elements within the distance from
      * @param epsilon The distance
      * @return A list of all values in D within distance epsilon from AttributeSet p
      */
@@ -92,8 +87,7 @@ public class ClusteringHelper {
 
     /**
      * Computes a rand index double signifying how similar to clusterings are
-     *
-     * @param clusters  The first cluster
+     * @param clusters The first cluster
      * @param clusters2 The second cluster
      * @return The rand index value
      */
@@ -159,8 +153,8 @@ public class ClusteringHelper {
 
         // Add to yes/no for elements that are in both (yes) and elements that don't match (no)
         for (List<Double> pairs : averageDistances) {
-            List<AttributeSet> cluster1 = clusters.get((int) (pairs.get(0).doubleValue()));
-            List<AttributeSet> cluster2 = clusters2.get((int) (pairs.get(1).doubleValue()));
+            List<AttributeSet> cluster1 = clusters.get((int)(pairs.get(0).doubleValue()));
+            List<AttributeSet> cluster2 = clusters2.get((int)(pairs.get(1).doubleValue()));
 
             if (cluster1.size() > cluster2.size()) {
                 no += cluster1.size() - cluster2.size();
@@ -194,56 +188,54 @@ public class ClusteringHelper {
 
     /**
      * Computes a rand index double signifying how correctly a data set was clustered
-     *
      * @param clusters The first cluster
      * @return The rand index value
      */
-    public static double computeRandIndex(Map<Integer, List<AttributeSet>> clusters) {
-        List<RandData> randList = new ArrayList<>();
-        int id = 1;
-        for (Map.Entry<Integer, List<AttributeSet>> pair : clusters.entrySet()) {
-            for (AttributeSet set : pair.getValue()) {
-                RandData data = new RandData();
-                data.data = set;
-                data.foundCluster = pair.getKey();
-                data.id = id;
-                ++id;
-                randList.add(data);
-            }
-        }
+	public static double computeRandIndex(Map<Integer, List<AttributeSet>> clusters){
+		List<RandData> randList = new ArrayList<>();
+		int id = 1;
+		for (Map.Entry<Integer, List<AttributeSet>> pair : clusters.entrySet ()) {
+			for (AttributeSet set : pair.getValue ()) {
+				RandData data = new RandData ();
+				data.data = set;
+				data.foundCluster = pair.getKey ();
+				data.id = id;
+				++id;
+				randList.add (data);
+			}
+		}
 
-        int truePositive = 0;
-        int trueNegative = 0;
+		int truePositive = 0;
+		int trueNegative = 0;
 
-        for (RandData dataPoint : randList) {
-            int inCluster = 0;
-            Map<Integer, Integer> wrongClusters = new HashMap<>();
-            double totalInDistance = 0;
-            Map<Integer, Double> wrongDistance = new HashMap<>();
-            for (RandData comparePoint : randList) {
-                if (dataPoint.id != comparePoint.id) {
-                    if (dataPoint.foundCluster == comparePoint.foundCluster) {
-                        double distance = attributeDistance(dataPoint, comparePoint);
-                        totalInDistance += distance;
-                        ++inCluster;
-                    } else {
-                        double distance = attributeDistance(dataPoint, comparePoint);
-                        if (!wrongDistance.containsKey(comparePoint.foundCluster))
-                            wrongDistance.put(comparePoint.foundCluster, 0.0);
-                        if (!wrongClusters.containsKey(comparePoint.foundCluster))
-                            wrongClusters.put(comparePoint.foundCluster, 0);
-                        wrongDistance.put(comparePoint.foundCluster, wrongDistance.get(comparePoint.foundCluster) + distance);
-                        wrongClusters.put(comparePoint.foundCluster, wrongClusters.get(comparePoint.foundCluster) + 1);
+		for (RandData dataPoint : randList) {
+            int inCluster = 0; Map<Integer, Integer> wrongClusters = new HashMap<>();
+            double totalInDistance = 0; Map<Integer, Double> wrongDistance = new HashMap<>();
+		    for (RandData comparePoint : randList) {
+		        if (dataPoint.id != comparePoint.id) {
+		            if (dataPoint.foundCluster == comparePoint.foundCluster) {
+		                double distance = attributeDistance (dataPoint, comparePoint);
+		                totalInDistance += distance;
+		                ++inCluster;
+                    }
+                    else {
+		                double distance = attributeDistance(dataPoint, comparePoint);
+		                if (!wrongDistance.containsKey(comparePoint.foundCluster))
+		                    wrongDistance.put (comparePoint.foundCluster, 0.0);
+		                if (!wrongClusters.containsKey(comparePoint.foundCluster))
+		                    wrongClusters.put(comparePoint.foundCluster, 0);
+		                wrongDistance.put (comparePoint.foundCluster, wrongDistance.get(comparePoint.foundCluster) + distance);
+		                wrongClusters.put (comparePoint.foundCluster, wrongClusters.get(comparePoint.foundCluster) + 1);
                     }
                 }
             }
             double averageInCluster = totalInDistance / inCluster;
-            boolean foundBetterCluster = false;
-            for (Integer key : wrongDistance.keySet()) {
-                double averageOutCluster = wrongDistance.get(key) / wrongClusters.get(key);
-                if (averageOutCluster < averageInCluster) {
-                    dataPoint.trueCluster = key;
-                    foundBetterCluster = true;
+		    boolean foundBetterCluster = false;
+		    for (Integer key : wrongDistance.keySet()) {
+		        double averageOutCluster = wrongDistance.get (key) / wrongClusters.get (key);
+		        if (averageOutCluster < averageInCluster) {
+		            dataPoint.trueCluster = key;
+		            foundBetterCluster = true;
                 }
             }
             if (!foundBetterCluster)
@@ -251,25 +243,24 @@ public class ClusteringHelper {
         }
 
         for (RandData dataPoint : randList) {
-            if (dataPoint.trueCluster == dataPoint.foundCluster)
-                ++truePositive;
-            else
-                ++trueNegative;
+		    if (dataPoint.trueCluster == dataPoint.foundCluster)
+		        ++truePositive;
+		    else
+		        ++ trueNegative;
         }
+        
+        return  (double)truePositive / randList.size();
+	}
 
-        double randIndex = (double) (truePositive + trueNegative) / NChooseR(randList.size(), 2);
-        return randIndex;
-    }
-
-    public static int NChooseR(int n, int r) {
-        int nCk = 1;
-        for (int i = 0; i < r; ++i) {
-            nCk = nCk * (n - i) / (i + 1);
+	public static int NChooseR (int n, int r) {
+	    int nCk = 1;
+	    for (int i = 0; i < r; ++i) {
+	        nCk = nCk * (n - i) / (i + 1);
         }
         return nCk;
     }
 
-    public static double attributeDistance(RandData first, RandData second) {
+	public static double attributeDistance (RandData first, RandData second) {
         double sum = 0;
         for (int i = 0; i < first.data.attributes.size(); ++i) {
             double difference = first.data.attributes.get(i) - second.data.attributes.get(i);
