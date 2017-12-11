@@ -46,26 +46,8 @@ public class Node {
 
         switch (nodeType) {
             case HIDDEN:    activationFunction = logisticActivation; break;
-            case RBFHIDDEN: activationFunction = gaussianBasisFunction; break;
             case INPUT:
-            case RBFINPUT:
             case OUTPUT:
-            default:        activationFunction = linearActivation; break;
-        }
-
-        newWeights.addAll(weights);
-    }
-
-    public Node(Type nodeType, List<Double> weights) {
-        this.nodeType = nodeType;
-        this.weights = weights;
-
-        switch (nodeType) {
-            case HIDDEN:    activationFunction = logisticActivation; break;
-            case RBFHIDDEN: activationFunction = gaussianBasisFunction; break;
-            case INPUT:
-            case OUTPUT:    activationFunction = logisticActivation; break;
-            case RBFINPUT:
             default:        activationFunction = linearActivation; break;
         }
 
@@ -95,6 +77,9 @@ public class Node {
         );
     }
 
+    /**
+     * Updates to new weights
+     */
     public void updateWeights() {
         weights = new ArrayList<Double>(newWeights);
     }
@@ -104,10 +89,7 @@ public class Node {
      * Takes in a value and a weight and multiplies them
      */
     private ToDoubleFunction<Double[]> calculateOutput = values -> values[0] * values[1];
-    /**
-     * Gaussian Basis Function (RBF Activation function)
-     */
-    private Function<Double, Double> gaussianBasisFunction = value -> Math.pow(Math.E, -Math.pow(value - mu, 2) / (2 * sigma * sigma));
+    
     /**
      * Linear Activation Function
      * Returns the input

@@ -68,35 +68,6 @@ public class Network implements Runnable {
         setNodeConnections();
     }
 
-    /**
-     * Constructor for Network
-     * @param hiddenLayers List containing number of nodes per layer
-     * @param dimension Number of input nodes
-     * @param outputDimension Number of output nodes
-     */
-    public Network(final List<Integer> hiddenLayers, int dimension, int outputDimension) {
-        if (hiddenLayers.get(0) == 0){
-            this.hiddenLayers = 0;
-        } else {
-            this.hiddenLayers = hiddenLayers.size();
-        }
-        this.dimension = dimension;
-
-        Layer.network = this;
-
-        layers.add(inputLayer = new Layer(dimension, Type.INPUT, dimension, this.stats));
-
-        if (hiddenLayers.get(0) != 0) {
-            for (int i : hiddenLayers) {
-                layers.add(new Layer(i, Type.HIDDEN, layers.get(layers.size() - 1).nodes.size(), this.stats));
-            }
-        }
-
-        this.outputLayer = new Layer(outputDimension, Type.OUTPUT, layers.get(layers.size() - 1).nodes.size(), this.stats);
-        layers.add(this.outputLayer);
-        setNodeConnections();
-    }
-
     public void setupExamples () {
         examples = new ArrayList<AttributeSet> ();
         verifySet = new ArrayList<AttributeSet> ();
@@ -124,13 +95,6 @@ public class Network implements Runnable {
 
     @Override
     public void run() {
-
-//            File file = new File(System.currentTimeMillis() + ".csv");
-//
-//            if (!file.exists()) {
-//                file.createNewFile();
-//            }
-//            PrintWriter writer = new PrintWriter(file);
 
             int run_count = 0;
             LinkedList<Double> verifyError = new LinkedList<Double>();
@@ -160,8 +124,6 @@ public class Network implements Runnable {
                     List<Double> networkOutput = forwardPropagate(example);
                     output.add(networkOutput.get(0));
 
-                    //System.out.println(networkOutput);
-
                     if (Double.isNaN(networkOutput.get(0))) {
                         System.err.println("NaN");
                         System.exit(1);
@@ -177,73 +139,18 @@ public class Network implements Runnable {
                     );
 
                     weightUpdate(networkWinner, example);
-                    //backPropagate(example.attributes);
 
                     layers.parallelStream().forEach(Layer::updateNodeWeights);
                 });
 
-                //TODO check if clusters change
-                if(IntStream.range(0, numOfClusters).allMatch((index)->this.clusters.get(index).equals(this.oldClusters.get(index)))){
+                if (IntStream.range(0, numOfClusters).allMatch((index) -> this.clusters.get(index).equals(this.oldClusters.get(index)))) {
                     same++;
-                }
-                else{
+                } else {
                     same = 0;
                 }
 
-                if(same == 5){
+                if (same == 5) {
                     shouldRun = false;
-                }
-
-
-
-                double mean = output.parallelStream().mapToDouble(d -> d).sum()/ (output.size());
-
-                double standardDeviation = output
-                        .parallelStream()
-                        .mapToDouble(d -> Math.pow(d - mean, 2))
-                        .sum() / (output.size() - 1);
-                standardDeviation = Math.sqrt(standardDeviation);
-
-                Logger.info("Mean is " + mean + " and standard deviation is " + standardDeviation);
-
-//                List<Double> outputs = examples
-//                        .stream()
-//                        .map(example -> example.outputs.get(0))
-//                        .collect(Collectors.toList());
-//
-//                System.out.println("Average error is " + calculateAverageError(output, outputs));
-
-                run_count++;
-                // If we have done 5 runs, do a verify check to see how error is coming along
-                if (run_count % 100 == 0) {
-                    double total = 0;
-                    // calculate error for each example in the verifySet
-                    for (int i = 0; i < verifySet.size(); i++){
-                        AttributeSet example = verifySet.get(i);
-                        List<Double> networkOutput = forwardPropagate(example);
-//                        Double exampleError = Math.abs(example.outputs.get(0) - networkOutput.get(0));
-//                        total += exampleError;
-                    }
-                    // average error across verifySet
-                    Double error = total / verifySet.size();
-
-//                    writer.print(error + ", ");
-//                    writer.flush();
-
-                    System.out.println("Verify Error " + error);
-                    verifyError.offer(error);
-
-                    // if verifyError is full check slope
-                    if (verifyError.size() == 20) {
-                        double first = verifyError.getFirst();
-                        double last = verifyError.getLast();
-                        // if slope is positive stop experiment
-                        if (last - first > 0) {
-                            shouldRun = false;
-                        }
-                        // pop off oldest error and add new error
-                        verifyError.remove();
-                    }
                 }
             }
 
@@ -253,7 +160,7 @@ public class Network implements Runnable {
     }
 
     /**
-     * TODO: write a description of forward propagation
+     *  Forward propagates input through network
      * Used for batch updates, where all examples will have their outputs calculated
      *
      * @return A [List] containing the output for each example in the examples list.
@@ -286,6 +193,11 @@ public class Network implements Runnable {
         return layers.get(layers.size() - 1).calculateNodeOutputs();
     }
 
+    /**
+     * Update weights
+     * @param winner Winning node
+     * @param example Example to update off of
+     */
     public void weightUpdate(int winner, AttributeSet example){
         List<Integer> indices = IntStream.range(0, layers.get(0).nodes.size()).boxed().collect(Collectors.toList());
 
@@ -294,109 +206,6 @@ public class Network implements Runnable {
                     outputLayer.nodes.get(winner).weights.set(index, currentWeight + learningRate*(example.attributes.get(index) - currentWeight));
                 }
         );
-    }
-
-    /**
-     * Calculate percent correct for list of outputs for a given Chromosome
-     * @return the percentage of correctly guessed classes
-     */
-//    public double getPercentCorrect(){
-//        int numCorrect = 0;
-//        double temp;
-//        double max = 0;
-//
-//        if (percentCorrect >= 0) {
-//            return percentCorrect;
-//        }
-//
-//        List<List<Double>> outputs = new ArrayList<>();
-//        // For each example we set the input layer's node's inputs to the example value,
-//        // then calculate the output for that example.
-//        examples.forEach(example -> {
-//            List<Double> networkOutput = forwardPropagate(example);
-//            outputs.add(networkOutput);
-//        });
-//        //Setting greatest probability to 1, rest to zero of outputs
-//        for (int i = 0; i < outputs.size(); i++) {
-//            for (int j = 0; j < outputs.get(i).size(); i++) {
-//                temp = outputs.get(i).get(j);
-//                if(temp > max){
-//                    max = temp;
-//                    outputs.get(i).set(j, 1d);
-//                    //TODO Review this ->
-//                    if(examples.get(i).networkWinner == j){
-//                        numCorrect++;
-//                    }
-//                }else;
-//                outputs.get(i).set(j, 0d);
-//            }
-//        }
-//        percentCorrect =  numCorrect / testSet.size();
-//
-//        return percentCorrect;
-//    }
-
-
-    /**
-     * Uses outputs to update weights through backpropagation
-     * @param target target values for output layer
-     */
-    public void backPropagate(List<Double> target) {
-
-        Layer currentLayer = layers.get(hiddenLayers + 1);
-        Layer previousLayer = layers.get(hiddenLayers);
-        List<Node> outputNodes = currentLayer.nodes;
-
-        // Updating weights on output layer
-        for (int i = 0; i < outputNodes.size(); i++) {
-            Node outputNode = outputNodes.get(i);
-            try {
-                //outputNode.delta = -1 * (target.get(i) - outputNode.output) * outputNode.output * (1 - outputNode.output);
-                outputNode.delta = -1 * (target.get(i) - outputNode.output);
-            } catch (Exception e) {
-                String mes =  e.getMessage();
-                e.printStackTrace();
-            }
-
-            for (int j = 0; j < outputNode.newWeights.size(); j++) {
-                double weightChange = outputNode.delta * previousLayer.nodes.get(j).output;
-
-                if (Double.isNaN(weightChange)){
-                    System.err.println("weightChange is not a number");
-                }
-                if (outputNode.delta == 0) {
-                    System.err.println("delta is zero");
-                }
-
-                outputNode.newWeights.set(j, outputNode.newWeights.get(j) - learningRate * weightChange);
-            }
-        }
-
-        // Iterating over all hidden layers to calculate weight change
-        for(int x = hiddenLayers; x > 0; x--) {
-            outputNodes = currentLayer.nodes;
-            currentLayer = layers.get(x);
-            previousLayer = layers.get(x - 1);
-
-            // Updates the weights of each node in the layer
-            for (int i = 0; i < currentLayer.nodes.size(); i++) {
-                final int index = i;
-                Node currentNode = currentLayer.nodes.get(i);
-
-                double weightedDeltaSum = outputNodes.parallelStream().mapToDouble(node -> node.delta * node.weights.get(index)).sum();
-                currentNode.delta = weightedDeltaSum * currentNode.output * (1 - currentNode.output);
-
-                // Updating each weight in the node
-                for (int j = 0; j < currentNode.newWeights.size(); j++) {
-                    double weightChange = currentNode.delta * previousLayer.nodes.get(j).output;
-                    if (Double.isNaN(weightChange)){
-                        System.err.println("weightChange is not a number");
-                    }
-
-                    currentNode.newWeights.set(j, currentNode.newWeights.get(j) - learningRate * weightChange);
-                }
-            }
-        }
     }
 
     /**
@@ -416,22 +225,4 @@ public class Network implements Runnable {
         );
     }
 
-    /**
-     * Calculates total error from Rosenbrock inputs and output from nodes
-     * f(x) = sum(.5(expected-output)^2)
-     * @param outputs from calculated node output
-     * @param inputs from rosenBrock
-     * @return squared error result
-     */
-    public double calculateTotalError(List<Double> outputs, List<Double> inputs) {
-        return IntStream.range(0, outputs.size())
-                .mapToDouble(i -> 0.5d * Math.pow(inputs.get(i) - outputs.get(i), 2))
-                .sum();
-    }
-
-    public double calculateAverageError(List<Double> outputs, List<Double> inputs) {
-        return IntStream.range(0, outputs.size())
-                .mapToDouble(i -> Math.abs(inputs.get(i) - outputs.get(i)))
-                .sum() / outputs.size();
-    }
 }

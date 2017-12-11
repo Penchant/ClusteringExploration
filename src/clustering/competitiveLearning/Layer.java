@@ -32,15 +32,6 @@ public class Layer {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Create layer with layerType and initially no nodes
-     * @param layerType The type of layer to be made
-     */
-    public Layer(Type layerType, int numWeights, Centroid stats) {
-        this(0, layerType, numWeights, stats);
-        nodes = new ArrayList<>();
-    }
-
     public boolean add(Node newNode) {
         return nodes.add(newNode);
     }
