@@ -1,9 +1,6 @@
 package clustering.util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -187,5 +184,90 @@ public class ClusteringHelper {
         }
 
         return (double) yes / (yes + no);
+    }
+
+    /**
+     * Computes a rand index double signifying how correctly a data set was clustered
+     * @param clusters The first cluster
+     * @return The rand index value
+     */
+	public static double computeRandIndex(Map<Integer, List<AttributeSet>> clusters){
+		List<RandData> randList = new ArrayList<>();
+		int id = 1;
+		for (Map.Entry<Integer, List<AttributeSet>> pair : clusters.entrySet ()) {
+			for (AttributeSet set : pair.getValue ()) {
+				RandData data = new RandData ();
+				data.data = set;
+				data.foundCluster = pair.getKey ();
+				data.id = id;
+				++id;
+				randList.add (data);
+			}
+		}
+
+		int truePositive = 0;
+		int trueNegative = 0;
+
+		for (RandData dataPoint : randList) {
+            int inCluster = 0; Map<Integer, Integer> wrongClusters = new HashMap<>();
+            double totalInDistance = 0; Map<Integer, Double> wrongDistance = new HashMap<>();
+		    for (RandData comparePoint : randList) {
+		        if (dataPoint.id != comparePoint.id) {
+		            if (dataPoint.foundCluster == comparePoint.foundCluster) {
+		                double distance = attributeDistance (dataPoint, comparePoint);
+		                totalInDistance += distance;
+		                ++inCluster;
+                    }
+                    else {
+		                double distance = attributeDistance(dataPoint, comparePoint);
+		                if (!wrongDistance.containsKey(comparePoint.foundCluster))
+		                    wrongDistance.put (comparePoint.foundCluster, 0.0);
+		                if (!wrongClusters.containsKey(comparePoint.foundCluster))
+		                    wrongClusters.put(comparePoint.foundCluster, 0);
+		                wrongDistance.put (comparePoint.foundCluster, wrongDistance.get(comparePoint.foundCluster) + distance);
+		                wrongClusters.put (comparePoint.foundCluster, wrongClusters.get(comparePoint.foundCluster) + 1);
+                    }
+                }
+            }
+            double averageInCluster = totalInDistance / inCluster;
+		    boolean foundBetterCluster = false;
+		    for (Integer key : wrongDistance.keySet()) {
+		        double averageOutCluster = wrongDistance.get (key) / wrongClusters.get (key);
+		        if (averageOutCluster < averageInCluster) {
+		            dataPoint.trueCluster = key;
+		            foundBetterCluster = true;
+                }
+            }
+            if (!foundBetterCluster)
+                dataPoint.trueCluster = dataPoint.foundCluster;
+        }
+
+        for (RandData dataPoint : randList) {
+		    if (dataPoint.trueCluster == dataPoint.foundCluster)
+		        ++truePositive;
+		    else
+		        ++ trueNegative;
+        }
+
+        double randIndex = (double)(truePositive + trueNegative) / NChooseR (randList.size(), 2);
+        return randIndex;
+	}
+
+	public static int NChooseR (int n, int r) {
+	    int nCk = 1;
+	    for (int i = 0; i < r; ++i) {
+	        nCk = nCk * (n - i) / (i + 1);
+        }
+        return nCk;
+    }
+
+	public static double attributeDistance (RandData first, RandData second) {
+        double sum = 0;
+        for (int i = 0; i < first.data.attributes.size(); ++i) {
+            double difference = first.data.attributes.get(i) - second.data.attributes.get(i);
+            difference *= difference;
+            sum += difference;
+        }
+        return Math.sqrt(sum);
     }
 }
