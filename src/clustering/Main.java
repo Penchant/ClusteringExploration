@@ -4,12 +4,10 @@ import clustering.aco.ACO;
 import clustering.dbscan.DBScan;
 import clustering.kmeans.KMeans;
 import clustering.pso.PSO;
+import clustering.competitiveLearning.CompetitiveLearning;
 import clustering.util.*;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
 
@@ -91,6 +89,7 @@ public class Main {
 
                 int k = Integer.parseInt(scanner.nextLine());
                 Map<Integer, List<AttributeSet>> clusters = KMeans.run(data, k);
+                
                 System.out.println ("Rand Index: " + ClusteringHelper.computeRandIndex(clusters));
                 break;
             case db:
@@ -103,7 +102,14 @@ public class Main {
                 clusters = DBScan.run(data, epsilon, minPts);
                 clusters.keySet().forEach(s -> Logger.info(clusters.get(s)));
                 break;
-            case cl: break;
+            case cl:
+                System.out.print("Enter number of clusters (integer)");
+                int numOfClusters = Integer.parseInt(scanner.nextLine());
+                CompetitiveLearning cl = new CompetitiveLearning(new ArrayList<>(), numOfClusters, data);
+                clusters = cl.mapOut;
+                clusters.keySet().forEach(s -> Logger.info(clusters.get(s)));
+
+                break;
             case pso:
                 System.out.print("Enter number of iterations (Integer): ");
                 int iteration = Integer.parseInt(scanner.nextLine());
