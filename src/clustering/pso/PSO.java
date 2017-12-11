@@ -294,7 +294,7 @@ public class PSO {
             System.out.println("Epoch: " + epochs);
 
             for (int i = 0; i < K; i++) {
-                Logger.info("Best Particle Centroid " + i + ": " + swarm.get(bestParticleIndex).getClusters()[i].centroid);
+                Logger.important("Best Particle Centroid " + i + ": " + swarm.get(bestParticleIndex).getClusters()[i].centroid);
             }
 
             epochs++;
