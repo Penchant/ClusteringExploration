@@ -114,10 +114,10 @@ public class Main {
                 k = Integer.parseInt(scanner.nextLine());
 
                 System.out.print("Enter tunable constant one (double [0,4]): ");
-                int c1 = Integer.parseInt(scanner.nextLine());
+                double c1 = Double.parseDouble(scanner.nextLine());
 
                 System.out.print("Enter tunable constant two (double [0,4]): ");
-                int c2 = Integer.parseInt(scanner.nextLine());
+                double c2 = Double.parseDouble(scanner.nextLine());
 
                 PSO pso = new PSO(data, iteration, particles, k, c1, c2);
                 clusters = pso.run();
@@ -142,7 +142,7 @@ public class Main {
                 System.out.print ("Enter the maximum velocity of the ants (double): ");
                 double vMax = Double.parseDouble(scanner.nextLine());
 
-                ACO.run(ants, iterations, size, alpha, c, vMax, data);
+                Map<Integer, List<AttributeSet>> clusters = ACO.run(ants, iterations, size, alpha, c, vMax, data);
                 break;
         }
     }

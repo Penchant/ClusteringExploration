@@ -29,7 +29,7 @@ public class DataLoader {
                 // Get each comma separated value and add to our list
                 AttributeSet samples = new AttributeSet();
                 // Limit to not include the class label
-                Stream.of(values).limit(values.length - 2).forEach(i -> samples.attributes.add(Double.parseDouble(i)));
+                Stream.of(values).limit(values.length - 1).forEach(i -> samples.attributes.add(Double.parseDouble(i)));
                 out.add(samples);
             }
         } catch (Exception e) {
