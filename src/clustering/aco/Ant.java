@@ -59,14 +59,14 @@ public class Ant {
      */
     void MoveAnt() {
         if (distanceFromOrigin() < maxDistance) {
-            double theta = randomInRange(0, 2 * Math.PI);
+            double theta = randomInRange(0, 2.0 * Math.PI);
             Vector2D newDirection = new Vector2D(Math.cos(theta), Math.sin(theta));
             newDirection.x *= velocity;
             newDirection.y *= velocity;
             pos.x += newDirection.x;
             pos.y += newDirection.y;
         } else {
-            Vector2D newDirection = new Vector2D(-1 * pos.x, -1 * pos.y);
+            Vector2D newDirection = new Vector2D(-1.0 * pos.x, -1.0 * pos.y);
             double mag = newDirection.Magnitude();
             newDirection.x = newDirection.x / mag * velocity;
             newDirection.y = newDirection.y / mag * velocity;
@@ -81,7 +81,7 @@ public class Ant {
      * determines the distance the ant is from the origin
      */
     private double distanceFromOrigin() {
-        return Math.sqrt(Math.pow((0 - pos.x), 2) + Math.pow((0 - pos.y), 2));
+        return Math.sqrt(Math.pow((0.0 - pos.x), 2.0) + Math.pow((0.0 - pos.y), 2.0));
     }
 
     /**

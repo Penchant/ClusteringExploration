@@ -89,9 +89,8 @@ public class Main {
 
                 int k = Integer.parseInt(scanner.nextLine());
                 Map<Integer, List<AttributeSet>> clusters = KMeans.run(data, k);
-                for (int i : clusters.keySet()) {
-                    System.out.println(i + ":" + clusters.get(i).size());
-                }
+                
+                System.out.println ("Rand Index: " + ClusteringHelper.computeRandIndex(clusters));
                 break;
             case db:
                 System.out.print("Enter epsilon (Max distance between points, double): ");
@@ -131,7 +130,7 @@ public class Main {
                 clusters = pso.run();
                 clusters.keySet().forEach(s -> Logger.important(s + ", " + clusters.get(s).size()));
                 break;
-            case aco: 
+            case aco:
                 System.out.print("Enter number of ants: ");
                 int ants = Integer.parseInt(scanner.nextLine());
 
@@ -151,6 +150,7 @@ public class Main {
                 double vMax = Double.parseDouble(scanner.nextLine());
 
                 clusters = ACO.run(ants, iterations, size, alpha, c, vMax, data);
+                System.out.println ("Rand Index: " + ClusteringHelper.computeRandIndex(clusters));
                 break;
         }
     }
