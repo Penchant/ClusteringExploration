@@ -125,7 +125,7 @@ public class ACO {
                         AttributeSet set = new AttributeSet(current.data);
                         List<AttributeSet> setList = clusters.get(neighbor.cluster);
                         setList.add(set);
-                        clusters.put(current.cluster, setList);
+                        clusters.put(neighbor.cluster, setList);
                     }
                 }
                 if (!clusterFound) {
