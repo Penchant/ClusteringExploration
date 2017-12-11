@@ -8,6 +8,8 @@ import java.util.function.ToDoubleFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import clustering.util.*;
+
 public class Node {
 
     public static double sigma = 0;
@@ -27,25 +29,27 @@ public class Node {
 
     private Type nodeType;
 
-    public Node(Type nodeType, int inputCount) {
+    public Node(Type nodeType, int inputCount, Centroid stats) {
         this.nodeType = nodeType;
+
 
         for (int i = 0; i < inputCount ; i++) {
             if (nodeType == Type.INPUT) {
                 weights.add(1d);
             } else if (nodeType == Type.OUTPUT){
-                weights.add(Math.random()/10);
+                double newWeight = stats.values.attributes.get(i) + stats.stdDev.attributes.get(i) * (Math.random() - .5) * 2;
+                weights.add(newWeight);
             } else {
                 weights.add(Math.random()/10);
             }
         }
 
         switch (nodeType) {
-            case OUTPUT:
             case HIDDEN:    activationFunction = logisticActivation; break;
             case RBFHIDDEN: activationFunction = gaussianBasisFunction; break;
             case INPUT:
             case RBFINPUT:
+            case OUTPUT:
             default:        activationFunction = linearActivation; break;
         }
 
@@ -70,7 +74,7 @@ public class Node {
 
     public double calculateOutput() {
         if(this.nodeType.equals(Type.OUTPUT)){
-            Double distance = IntStream.range(0, weights.size()).mapToDouble(i -> Math.pow(weights.get(0), 2) - Math.pow(inputs.get(0), 2)).sum();
+            Double distance = ClusteringHelper.distance(new AttributeSet(this.weights), new AttributeSet(this.inputs));
             return output = activationFunction.apply(1/distance);
         }
 

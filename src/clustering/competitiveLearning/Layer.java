@@ -1,5 +1,7 @@
 package clustering.competitiveLearning;
 
+import clustering.util.Centroid;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,14 +21,14 @@ public class Layer {
      * @param nodeCount number of nodes initially in layer
      * @param layerType type of layer
      */
-    public Layer(int nodeCount, Type layerType, int numWeights) {
+    public Layer(int nodeCount, Type layerType, int numWeights, Centroid stats) {
         this.layerType = layerType;
         this.id = count++;
 
         nodes = IntStream.range(0, nodeCount)
                 .boxed()
                 .parallel()
-                .map(i -> new Node(layerType, numWeights))
+                .map(i -> new Node(layerType, numWeights, stats))
                 .collect(Collectors.toList());
     }
 
@@ -34,8 +36,8 @@ public class Layer {
      * Create layer with layerType and initially no nodes
      * @param layerType The type of layer to be made
      */
-    public Layer(Type layerType, int numWeights) {
-        this(0, layerType, numWeights);
+    public Layer(Type layerType, int numWeights, Centroid stats) {
+        this(0, layerType, numWeights, stats);
         nodes = new ArrayList<>();
     }
 

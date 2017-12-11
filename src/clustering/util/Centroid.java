@@ -1,8 +1,10 @@
 package clustering.util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Class that represents a Centroid
@@ -11,10 +13,32 @@ import java.util.stream.Collectors;
  */
 public class Centroid {
     public AttributeSet values;
+    public AttributeSet stdDev;
 
     public Centroid(List<Double> values) {
         this.values = new AttributeSet();
         this.values.attributes.addAll(values);
+    }
+
+    public Centroid(ArrayList<AttributeSet> attributeSets){
+        AttributeSet average = new AttributeSet();
+        stdDev = new AttributeSet();
+        IntStream.range(0, attributeSets.get(0).attributes.size()).forEach(index -> average.attributes.add(0d));
+        IntStream.range(0, attributeSets.get(0).attributes.size()).forEach(index -> stdDev.attributes.add(0d));
+
+
+        IntStream.range(0,attributeSets.get(0).attributes.size()).forEach( attributeIndex -> {
+                    double mean = IntStream.range(0, attributeSets.size()).mapToDouble(index -> attributeSets.get(index).attributes.get(attributeIndex)).sum();
+                    average.attributes.set(attributeIndex, mean / attributeSets.size());
+
+                    double standardDev = Math.sqrt( IntStream.range(0, attributeSets.size())
+                            .mapToDouble(index -> Math.pow(attributeSets.get(index).attributes.get(attributeIndex) - average.attributes.get(attributeIndex), 2))
+                            .sum() / (attributeSets.size() - 1));
+                    stdDev.attributes.set(attributeIndex, standardDev);
+                }
+        );
+
+        this.values = average;
     }
 
     public Centroid(double ... values) {

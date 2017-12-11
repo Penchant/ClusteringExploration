@@ -2,6 +2,7 @@ package clustering.competitiveLearning;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import clustering.util.*;
@@ -22,6 +23,7 @@ public class Network implements Runnable {
     private List<AttributeSet> testSet;
 
     private List<Cluster> oldClusters;
+    private Centroid stats;
     private int hiddenLayers;
     private int numOfClusters;
     private int dimension;
@@ -47,18 +49,20 @@ public class Network implements Runnable {
         this.numOfClusters = numOfClusters;
         IntStream.range(0, numOfClusters).forEach((index) -> this.clusters.add(new Cluster()));
 
-        layers.add(inputLayer = new Layer(dimension, Type.INPUT, dimension));
+        this.stats = new Centroid((ArrayList<AttributeSet>) examples);
+
+        layers.add(inputLayer = new Layer(dimension, Type.INPUT, dimension, this.stats));
 
         this.fullSet = examples;
         setupExamples();
 
         if (hiddenLayers.size() !=0 && hiddenLayers.get(0) != 0) {
             for (int i : hiddenLayers) {
-                layers.add(new Layer(i, Type.HIDDEN, layers.get(layers.size() - 1).nodes.size()));
+                layers.add(new Layer(i, Type.HIDDEN, layers.get(layers.size() - 1).nodes.size(), this.stats));
             }
         }
 
-        this.outputLayer = new Layer(numOfClusters, Type.OUTPUT, layers.get(layers.size() - 1).nodes.size());
+        this.outputLayer = new Layer(numOfClusters, Type.OUTPUT, layers.get(layers.size() - 1).nodes.size(), this.stats);
         layers.add(this.outputLayer);
 
         setNodeConnections();
@@ -80,15 +84,15 @@ public class Network implements Runnable {
 
         Layer.network = this;
 
-        layers.add(inputLayer = new Layer(dimension, Type.INPUT, dimension));
+        layers.add(inputLayer = new Layer(dimension, Type.INPUT, dimension, this.stats));
 
         if (hiddenLayers.get(0) != 0) {
             for (int i : hiddenLayers) {
-                layers.add(new Layer(i, Type.HIDDEN, layers.get(layers.size() - 1).nodes.size()));
+                layers.add(new Layer(i, Type.HIDDEN, layers.get(layers.size() - 1).nodes.size(), this.stats));
             }
         }
 
-        this.outputLayer = new Layer(outputDimension, Type.OUTPUT, layers.get(layers.size() - 1).nodes.size());
+        this.outputLayer = new Layer(outputDimension, Type.OUTPUT, layers.get(layers.size() - 1).nodes.size(), this.stats);
         layers.add(this.outputLayer);
         setNodeConnections();
     }
@@ -172,13 +176,14 @@ public class Network implements Runnable {
                     IntStream.range(0, numOfClusters).forEach((i) -> target.add(i == networkWinner ? 1d : 0d)
                     );
 
-                    backPropagate(target);
+                    weightUpdate(networkWinner, example);
+                    //backPropagate(example.attributes);
 
                     layers.parallelStream().forEach(Layer::updateNodeWeights);
                 });
 
                 //TODO check if clusters change
-                if(IntStream.range(0, numOfClusters).allMatch((index)->this.clusters.get(index).equals(this.clusters.get(index)))){
+                if(IntStream.range(0, numOfClusters).allMatch((index)->this.clusters.get(index).equals(this.oldClusters.get(index)))){
                     same++;
                 }
                 else{
@@ -199,7 +204,7 @@ public class Network implements Runnable {
                         .sum() / (output.size() - 1);
                 standardDeviation = Math.sqrt(standardDeviation);
 
-                System.out.println("Mean is " + mean + " and standard deviation is " + standardDeviation);
+                Logger.info("Mean is " + mean + " and standard deviation is " + standardDeviation);
 
 //                List<Double> outputs = examples
 //                        .stream()
@@ -242,22 +247,9 @@ public class Network implements Runnable {
                 }
             }
 
-            System.out.println("Run Ended");
-            List<Double> errors = new ArrayList<Double>();
-            List<Boolean> correctApproximations = new ArrayList<Boolean>();
-            for (int i = 0; i < testSet.size (); i++) {
-                AttributeSet example = testSet.get(i);
-                List<Double> networkOutput = forwardPropagate(example);
-                Double exampleError = 0.0d;
-                //= Math.abs(example.outputs.get(0) - networkOutput.get(0));
-                //TODO
-                errors.add(exampleError);
-                if (exampleError <= 0.001) {
-                    correctApproximations.add(true);
-                } else {
-                    correctApproximations.add(false);
-                }
-            }
+            this.epoch -= 4;
+
+            Logger.important("Competitive Learning successfully finished in " + this.epoch + " epochs");
     }
 
     /**
@@ -292,6 +284,16 @@ public class Network implements Runnable {
 
         // We have hit the output and need to save it - Assume output has only one node.
         return layers.get(layers.size() - 1).calculateNodeOutputs();
+    }
+
+    public void weightUpdate(int winner, AttributeSet example){
+        List<Integer> indices = IntStream.range(0, layers.get(0).nodes.size()).boxed().collect(Collectors.toList());
+
+        IntStream.range(0, example.attributes.size()).forEach( index -> {
+                    Double currentWeight = outputLayer.nodes.get(winner).weights.get(index);
+                    outputLayer.nodes.get(winner).weights.set(index, currentWeight + learningRate*(example.attributes.get(index) - currentWeight));
+                }
+        );
     }
 
     /**
@@ -349,7 +351,8 @@ public class Network implements Runnable {
         for (int i = 0; i < outputNodes.size(); i++) {
             Node outputNode = outputNodes.get(i);
             try {
-                outputNode.delta = -1 * (target.get(i) - outputNode.output) * outputNode.output * (1 - outputNode.output);
+                //outputNode.delta = -1 * (target.get(i) - outputNode.output) * outputNode.output * (1 - outputNode.output);
+                outputNode.delta = -1 * (target.get(i) - outputNode.output);
             } catch (Exception e) {
                 String mes =  e.getMessage();
                 e.printStackTrace();

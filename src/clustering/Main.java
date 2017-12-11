@@ -104,6 +104,8 @@ public class Main {
                 System.out.print("Enter number of clusters (integer)");
                 int numOfClusters = Integer.parseInt(scanner.nextLine());
                 CompetitiveLearning cl = new CompetitiveLearning(new ArrayList<>(), numOfClusters, data);
+                clusters = cl.mapOut;
+                clusters.keySet().forEach(s -> Logger.info(clusters.get(s)));
 
                 break;
             case pso:

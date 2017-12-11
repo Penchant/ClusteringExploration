@@ -1,10 +1,15 @@
 package clustering.competitiveLearning;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import clustering.util.*;
 
 public class CompetitiveLearning {
+
+    public int epoch;
+    public Map<Integer, List<AttributeSet>> mapOut;
 
     public CompetitiveLearning(final List<Integer> hiddenLayers, int numOfClusters, List<AttributeSet> data){
 
@@ -13,6 +18,13 @@ public class CompetitiveLearning {
         }
         Network net = new Network(hiddenLayers, numOfClusters, data);
         net.run();
+        this.epoch = net.epoch;
+
+        this.mapOut = new HashMap<>();
+
+        for (int i = 0; i < net.clusters.size(); i++) {
+            this.mapOut.put(i, net.clusters.get(i).members);
+        }
     }
 
 }
