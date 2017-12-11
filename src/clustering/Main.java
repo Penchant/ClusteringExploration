@@ -4,10 +4,7 @@ import clustering.aco.ACO;
 import clustering.dbscan.DBScan;
 import clustering.kmeans.KMeans;
 import clustering.pso.PSO;
-import clustering.util.AttributeSet;
-import clustering.util.Centroid;
-import clustering.util.DataLoader;
-import clustering.util.Logger;
+import clustering.util.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -93,9 +90,7 @@ public class Main {
                 System.out.print("Enter k (How many clusters, integer): ");
 
                 int k = Integer.parseInt(scanner.nextLine());
-                List<Centroid> centroids = KMeans.run(data, k);
-
-                centroids.stream().forEach(System.out::println);
+                KMeans.run(data, k);
                 break;
             case db:
                 System.out.print("Enter epsilon (Max distance between points, double): ");

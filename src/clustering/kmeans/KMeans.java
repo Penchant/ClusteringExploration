@@ -3,7 +3,9 @@ package clustering.kmeans;
 import clustering.util.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class KMeans {
     private static Cluster[] clusters;
@@ -15,7 +17,7 @@ public class KMeans {
      * @param k The number of clusters desired
      * @return A list of the centroids of each cluster calculated
      */
-    public static List<Centroid> run(List<AttributeSet> D, int k) {
+    public static Map<Integer, List<AttributeSet>> run(List<AttributeSet> D, int k) {
         clusters = new Cluster[k];
 
         List<Centroid> lastCentroid = new ArrayList<>();
@@ -84,8 +86,14 @@ public class KMeans {
             }
         }
 
+        Map<Integer, List<AttributeSet>> out = new HashMap<>();
+
+        for (int i = 0; i < clusters.length; i++) {
+            out.put(i, clusters[i].members);
+        }
+
         Logger.important("K Means successfully finished in " + epochs + " epochs");
-        return ClusteringHelper.centroids(clusters);
+        return out;
     }
 
 }
