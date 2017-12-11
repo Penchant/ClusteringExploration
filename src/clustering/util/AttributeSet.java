@@ -27,6 +27,23 @@ public class AttributeSet {
     }
 
     @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof AttributeSet)) {
+            return false;
+        } else {
+            AttributeSet o = (AttributeSet) other;
+            if (o.attributes.size() != attributes.size()) return false;
+
+            for (int i = 0; i < attributes.size(); i++) {
+                if (attributes.get(i) != o.attributes.get(i)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+
+    @Override
     public String toString() {
         String tab = "\t";
         return "AttributeSet: {\n" +
